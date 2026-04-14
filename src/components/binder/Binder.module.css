@@ -1,0 +1,98 @@
+.binder {
+  width: var(--binder-width);
+  flex-shrink: 0;
+  height: 100%;
+  overflow-y: auto;
+  border-right: 1px solid var(--color-border);
+  background: var(--color-surface);
+  padding: var(--space-2) 0 var(--space-3);
+  display: flex;
+  flex-direction: column;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0 var(--space-2) var(--space-2);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  transition: border-color var(--transition);
+}
+.searchBar:focus-within { border-color: var(--color-accent); }
+
+.searchIcon {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.searchInput {
+  flex: 1;
+  height: 28px;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  outline: none;
+  color: var(--color-text);
+}
+.searchInput::placeholder { color: var(--color-text-muted); }
+
+.searchClear {
+  display: flex;
+  align-items: center;
+  color: var(--color-text-muted);
+  border-radius: var(--radius-sm);
+  padding: 2px;
+  transition: color var(--transition);
+}
+.searchClear:hover { color: var(--color-text); }
+
+.binder::-webkit-scrollbar { width: 4px; }
+.binder::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
+
+.staticLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: 5px var(--space-3);
+  margin: 0 0 var(--space-1);
+  border: none;
+  background: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  text-align: left;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition), color var(--transition);
+}
+.staticLink:hover { background: var(--color-surface-2); color: var(--color-text); }
+.staticLinkActive { background: var(--color-surface-2); color: var(--color-accent) !important; }
+
+.staticLinkIcon {
+  flex-shrink: 0;
+  color: inherit;
+}
+
+.dragOverlay {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  pointer-events: none;
+  color: var(--color-text);
+}
+
+.overlayIcon {
+  color: var(--color-accent);
+  display: flex;
+  align-items: center;
+}

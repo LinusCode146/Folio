@@ -1,0 +1,70 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--color-bg);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+  background: var(--color-bg);
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text);
+  letter-spacing: -0.2px;
+}
+
+.viewToggle {
+  display: flex;
+  gap: var(--space-1);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 2px;
+}
+
+.viewBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 4px 10px;
+  border-radius: calc(var(--radius-md) - 2px);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  transition: color var(--transition), background var(--transition);
+}
+
+.viewBtn:hover {
+  color: var(--color-text);
+  background: var(--color-surface-2);
+}
+
+.viewBtnActive {
+  color: var(--color-accent);
+  background: var(--color-surface-2);
+}
+
+.empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  color: var(--color-text);
+  font-size: 14px;
+}
+
+.emptyHint {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}

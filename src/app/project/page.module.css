@@ -1,0 +1,90 @@
+.workspace {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  height: var(--toolbar-height);
+  padding: 0 var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  flex-shrink: 0;
+}
+
+.toolbarBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  transition: color var(--transition), background var(--transition);
+}
+.toolbarBtn:hover {
+  color: var(--color-text);
+  background: var(--color-surface-2);
+}
+
+.projectName {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--color-text);
+}
+
+.toolbarRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.main {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.splash {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  gap: var(--space-2);
+}
+
+.welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: var(--space-3);
+}
+
+.welcomeTitle {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--color-text);
+}
+
+.welcomeHint {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}

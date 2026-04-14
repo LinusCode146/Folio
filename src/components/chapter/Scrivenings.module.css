@@ -1,0 +1,66 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.toolbar {
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+
+.toolbarPlaceholder {
+  height: 38px;
+}
+
+.scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-6) var(--space-4);
+}
+
+.scroll::-webkit-scrollbar { width: 6px; }
+.scroll::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+
+.page {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.sceneBlock {
+  /* Each scene is its own block */
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: var(--space-4) 0 var(--space-3);
+  color: var(--color-text-muted);
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.dividerLabel {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  color: var(--color-text-muted);
+}
+
+.sceneSeparator {
+  height: 1px;
+  background: var(--color-border);
+  margin: var(--space-5) 0;
+  opacity: 0.5;
+}

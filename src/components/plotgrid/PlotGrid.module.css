@@ -1,0 +1,117 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--color-bg);
+}
+
+.header {
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.tableWrapper {
+  flex: 1;
+  overflow: auto;
+  padding: var(--space-4);
+}
+
+.table {
+  border-collapse: collapse;
+  min-width: 100%;
+}
+
+.cornerCell {
+  width: 160px;
+  min-width: 160px;
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-muted);
+  border-bottom: 2px solid var(--color-border);
+  background: var(--color-surface);
+  position: sticky;
+  left: 0;
+}
+
+.threadHeader {
+  min-width: 160px;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 2px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.threadHeaderInner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.threadDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.threadLabel {
+  font-size: 13px;
+  font-weight: 600;
+  flex: 1;
+}
+
+.deleteThread {
+  color: var(--color-text-muted);
+  opacity: 0;
+  transition: opacity var(--transition), color var(--transition);
+}
+.threadHeader:hover .deleteThread { opacity: 1; }
+.deleteThread:hover { color: var(--color-danger); }
+
+.addThreadCell {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 2px solid var(--color-border);
+  background: var(--color-surface);
+  min-width: 120px;
+}
+
+.newThreadInput {
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  color: var(--color-text-muted);
+  outline: none;
+  width: 100%;
+}
+.newThreadInput::placeholder { color: var(--color-text-muted); }
+
+.sceneCell {
+  padding: var(--space-2) var(--space-3);
+  font-size: 13px;
+  font-weight: 500;
+  border-bottom: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+  background: var(--color-surface);
+  position: sticky;
+  left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+.empty {
+  padding: var(--space-5);
+  color: var(--color-text-muted);
+  font-size: 13px;
+  text-align: center;
+}

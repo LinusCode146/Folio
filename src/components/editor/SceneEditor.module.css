@@ -1,0 +1,305 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--color-bg);
+}
+
+.scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-6) var(--space-4);
+}
+
+.scroll::-webkit-scrollbar { width: 6px; }
+.scroll::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+
+.page {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.docTitle {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-5);
+  letter-spacing: -0.3px;
+  text-align: center;
+}
+
+.editor :global(.ProseMirror) {
+  outline: none;
+  font-size: 16px;
+  color: var(--color-text);
+  min-height: 60vh;
+  cursor: text;
+}
+
+/* Novel-style paragraphs: No gaps, consistent indents, and standard line-height */
+.editor :global(.ProseMirror) p {
+  margin-top: 0;
+  margin-bottom: 0;
+  text-indent: 1.5em;
+  line-height: 1.5;
+}
+
+/* Fix: empty paragraphs (ProseMirror renders them as <p><br></p>) must not
+   inherit a custom line-height from the LineHeight extension, because that
+   makes the browser caret as tall as the line-height × font-size — e.g. 2×
+   on a double-spaced line. !important is needed to override the inline style
+   attribute that the extension writes. */
+.editor :global(.ProseMirror p:has(> br:only-child)) {
+  line-height: 1.5 !important;
+}
+
+/* Removes the indent from the very first paragraph of the scene */
+.editor :global(.ProseMirror) p:first-of-type {
+  text-indent: 0;
+}
+
+.editor :global(.ProseMirror h1) { font-size: 22px; font-weight: 700; margin: 1.5em 0 0.5em; }
+.editor :global(.ProseMirror h2) { font-size: 18px; font-weight: 600; margin: 1.2em 0 0.4em; }
+.editor :global(.ProseMirror ul),
+.editor :global(.ProseMirror ol) { padding-left: 1.5em; margin-bottom: 1em; }
+.editor :global(.ProseMirror li) { margin-bottom: 0.25em; }
+.editor :global(.ProseMirror strong) { font-weight: 700; }
+.editor :global(.ProseMirror em) { font-style: italic; }
+
+.editor :global(.search-match) {
+  background: rgba(255, 200, 0, 0.35);
+  border-radius: 2px;
+}
+
+/* Zen mode */
+.zenOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.zenScroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 80px var(--space-4) 120px;
+}
+.zenScroll::-webkit-scrollbar { width: 6px; }
+.zenScroll::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+
+.zenPage {
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.zenBar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-6);
+  height: 44px;
+  gap: var(--space-3);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  z-index: 1001;
+}
+.zenBarVisible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.zenBarTop {
+  top: 0;
+  background: linear-gradient(to bottom, var(--color-bg) 60%, transparent);
+  justify-content: space-between;
+}
+
+.zenBarBottom {
+  bottom: 0;
+  background: linear-gradient(to top, var(--color-bg) 60%, transparent);
+  justify-content: center;
+  gap: var(--space-5);
+}
+
+.zenProjectName {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.zenTitle {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  flex: 1;
+  text-align: center;
+}
+
+.zenExitBtn {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: transparent;
+  transition: color var(--transition), background var(--transition);
+}
+.zenExitBtn:hover {
+  color: var(--color-text);
+  background: var(--color-surface-2);
+}
+
+.zenWordCount {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.zenHint {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  opacity: 0.6;
+}
+
+/* Tables */
+.editor :global(.ProseMirror table) {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  margin: 1em 0;
+  overflow: hidden;
+}
+
+.editor :global(.ProseMirror td),
+.editor :global(.ProseMirror th) {
+  min-width: 1em;
+  border: 1px solid var(--color-border);
+  padding: 6px 10px;
+  vertical-align: top;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.editor :global(.ProseMirror th) {
+  background: var(--color-surface-2);
+  font-weight: 600;
+  text-align: left;
+}
+
+.editor :global(.ProseMirror .selectedCell::after) {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+  pointer-events: none;
+}
+
+.editor :global(.ProseMirror .column-resize-handle) {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--color-accent);
+  cursor: col-resize;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 20;
+}
+
+.editor :global(.ProseMirror table:hover .column-resize-handle),
+.editor :global(.ProseMirror .column-resize-handle:hover) { opacity: 1; }
+
+.editor :global(.tableWrapper) {
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+.editor :global(.resize-cursor) { cursor: col-resize; }
+
+/* Body row: editor column + optional synopsis sidebar */
+.body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.editorColumn {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Synopsis sidebar */
+.synopsisPanel {
+  width: 280px;
+  flex-shrink: 0;
+  border-left: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+}
+
+.synopsisHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.synopsisTitle {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-muted);
+}
+
+.synopsisClose {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  padding: 2px 4px;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition), background var(--transition);
+}
+.synopsisClose:hover {
+  color: var(--color-text);
+  background: var(--color-surface-2);
+}
+
+.synopsisTextarea {
+  flex: 1;
+  padding: var(--space-4);
+  font-size: 13px;
+  line-height: 1.65;
+  resize: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-text);
+  font-family: inherit;
+}
+
+.synopsisTextarea::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.7;
+}
+
+/* Inline (scrivenings) mode — no scroll wrapper, height driven by content */
+.inlineRoot {
+  padding: var(--space-4) 0;
+}
+
+.editor :global(.ProseMirror .is-editor-empty:first-child::before) {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--color-text-muted);
+  pointer-events: none;
+  height: 0;
+}

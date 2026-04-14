@@ -1,0 +1,104 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--color-bg);
+}
+
+.scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-6) var(--space-4);
+  max-width: 640px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.scroll::-webkit-scrollbar { width: 6px; }
+.scroll::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+
+.loading {
+  padding: var(--space-4);
+  color: var(--color-text-muted);
+}
+
+.pageTitle {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: var(--space-5);
+  letter-spacing: -0.3px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-muted);
+}
+
+.input {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-size: 14px;
+  outline: none;
+  transition: border-color var(--transition);
+}
+.input:focus { border-color: var(--color-accent); }
+
+.textarea {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-size: 14px;
+  outline: none;
+  resize: vertical;
+  line-height: 1.6;
+  transition: border-color var(--transition);
+}
+.textarea:focus { border-color: var(--color-accent); }
+
+.traits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  align-items: center;
+}
+
+.trait {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: 100px;
+  padding: 2px var(--space-2);
+  font-size: 12px;
+}
+.trait button { display: flex; align-items: center; color: var(--color-text-muted); }
+.trait button:hover { color: var(--color-danger); }
+
+.traitInput {
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  outline: none;
+  min-width: 100px;
+}
