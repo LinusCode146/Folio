@@ -1,55 +1,147 @@
-/* ── Design tokens ─────────────────────────────────────────── */
-:root {
-  /* Colors — light */
-  --color-bg: #f5f4f0;
-  --color-surface: #faf9f6;
-  --color-surface-2: #e6e4dd;
-  --color-border: #d8d6cf;
-  --color-text: #1a1a18;
-  --color-text-muted: #58564f;
-  --color-accent: #4a6fa5;
-  --color-accent-hover: #3a5a8a;
-  --color-danger: #c0392b;
+/*
+ * Folio — Design tokens
+ *
+ * Aesthetic: Writer's Study.
+ * Dark mode is the hero (lamp-lit desk at 11pm). Light mode is its paper-study
+ * sibling. Both share a single warm-amber accent — switching modes should feel
+ * like the lamp got brighter, not like a different app.
+ *
+ * Hue families
+ *   - Accent amber ~75°. Neutrals are tinted toward it for cohesion.
+ *   - Dark canvas has a faint blue-black cast (240°) so the amber-tinted
+ *     panels and manuscript page visually separate from the "room."
+ *
+ * Rules of engagement
+ *   - One accent. Amber only. Used sparingly (active scene, focus rings).
+ *   - No side-stripe borders. Status = tinted chips, never colored left-borders.
+ *   - No gradient text. Ever.
+ *   - Transform + opacity motion only. Never animate layout properties.
+ *   - Preserve the caret contract: `line-height: 1` default on <p>, rhythm via margin.
+ */
 
-  /* Typography */
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+/* ── Light (paper-study) — default ─────────────────────────── */
+:root {
+  /* Colors */
+  --color-bg:          oklch(0.965 0.009 85);
+  --color-surface:     oklch(0.985 0.005 85);
+  --color-surface-2:   oklch(0.935 0.010 85);
+  --color-surface-3:   oklch(0.895 0.012 85);
+  --color-canvas:      oklch(0.990 0.004 85);
+  --color-text:        oklch(0.225 0.014 55);
+  --color-text-muted:  oklch(0.470 0.012 55);
+  --color-text-faint:  oklch(0.620 0.010 55);
+  --color-border:      oklch(0.860 0.012 85);
+  --color-border-strong: oklch(0.780 0.014 85);
+  --color-accent:      oklch(0.580 0.165 58);
+  --color-accent-hover: oklch(0.520 0.170 55);
+  --color-accent-soft: color-mix(in oklch, var(--color-accent) 15%, transparent);
+  --color-accent-ink:  oklch(0.420 0.170 55);
+  --color-focus:       var(--color-accent);
+  --color-danger:      oklch(0.500 0.190 25);
+  --color-danger-soft: color-mix(in oklch, var(--color-danger) 12%, transparent);
+  /* Text colour to use on top of accent/danger backgrounds (AA in both modes) */
+  --color-on-accent:   oklch(0.15 0.015 55);
+  --color-on-danger:   oklch(0.97 0.004 85);
+
+  /* Status — editorial marginalia tints, not primary-color traffic lights */
+  --status-outline:    oklch(0.600 0.015 60);
+  --status-draft:      oklch(0.680 0.120 75);
+  --status-revised:    oklch(0.540 0.100 230);
+  --status-final:      oklch(0.540 0.120 150);
+
+  /* Typography — families (vars set by next/font on <html>) */
+  --font-fallback-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-fallback-serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --font-fallback-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  font-family: var(--font-ui, var(--font-fallback-sans));
   font-size: 14px;
   line-height: 1.5;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern", "liga", "calt";
 
-  /* Spacing */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
+  /* Typography — scale (fixed rem; this is app UI, not marketing) */
+  --text-2xs: 0.6875rem;  /* 11px — metadata     */
+  --text-xs:  0.75rem;    /* 12px — secondary    */
+  --text-sm:  0.8125rem;  /* 13px — primary UI   */
+  --text-base: 0.9375rem; /* 15px — body default */
+  --text-md:  1.0625rem;  /* 17px — canvas body  */
+  --text-lg:  1.25rem;    /* 20px                */
+  --text-xl:  1.5rem;     /* 24px                */
+  --text-2xl: 1.875rem;   /* 30px                */
+  --text-3xl: 2.375rem;   /* 38px — hub hero     */
 
-  /* Radius */
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 10px;
+  /* Spacing — semantic 4pt scale */
+  --space-2xs: 2px;
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  12px;
+  --space-lg:  16px;
+  --space-xl:  24px;
+  --space-2xl: 32px;
+  --space-3xl: 48px;
+  --space-4xl: 64px;
+  --space-5xl: 96px;
 
-  /* Binder */
+  /* Compatibility aliases for existing module CSS (transitional) */
+  --space-1: var(--space-xs);
+  --space-2: var(--space-sm);
+  --space-3: var(--space-md);
+  --space-4: var(--space-lg);
+  --space-5: var(--space-xl);
+  --space-6: var(--space-2xl);
+
+  /* Radii — sharper than before; study vibe rejects bubble-chip UI */
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 8px;
+
+  /* Layout constants */
   --binder-width: 240px;
   --toolbar-height: 44px;
+  --max-manuscript: clamp(680px, 58vw, 880px);
+  --max-zen: 620px;
+  --max-sheet: 640px;
+  --max-corkboard: 1100px;
+  --sidebar-editor: 288px;
+  --sidebar-compile: 232px;
 
-  /* Transitions */
-  --transition: 150ms ease;
+  /* Motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);        /* ease-out-quart */
+  --duration-fast: 120ms;
+  --duration:      180ms;
+  --duration-slow: 280ms;
+  --transition:    var(--duration) var(--ease);   /* legacy alias */
 }
 
+/* ── Dark (writer's study, night) — hero ───────────────────── */
 [data-theme="dark"] {
-  --color-bg: #1e1e1c;
-  --color-surface: #2a2a27;
-  --color-surface-2: #353532;
-  --color-border: #3a3a36;
-  --color-text: #e8e6df;
-  --color-text-muted: #9e9c93;
-  --color-accent: #6b9bd2;
-  --color-accent-hover: #85aede;
-  --color-danger: #e05a4a;
+  --color-bg:          oklch(0.152 0.012 240);
+  --color-surface:     oklch(0.195 0.010 60);
+  --color-surface-2:   oklch(0.240 0.010 60);
+  --color-surface-3:   oklch(0.285 0.012 60);
+  --color-canvas:      oklch(0.205 0.013 70);
+  --color-text:        oklch(0.925 0.012 75);
+  --color-text-muted:  oklch(0.650 0.010 65);
+  --color-text-faint:  oklch(0.460 0.008 60);
+  --color-border:      oklch(0.280 0.010 240);
+  --color-border-strong: oklch(0.360 0.012 240);
+  --color-accent:      oklch(0.800 0.135 78);
+  --color-accent-hover: oklch(0.850 0.140 75);
+  --color-accent-soft: color-mix(in oklch, var(--color-accent) 18%, transparent);
+  --color-accent-ink:  oklch(0.700 0.135 78);
+  --color-focus:       var(--color-accent);
+  --color-danger:      oklch(0.680 0.160 25);
+  --color-danger-soft: color-mix(in oklch, var(--color-danger) 16%, transparent);
+
+  --status-outline:    oklch(0.620 0.012 60);
+  --status-draft:      oklch(0.780 0.120 78);
+  --status-revised:    oklch(0.700 0.095 230);
+  --status-final:      oklch(0.720 0.110 150);
 }
 
 /* ── Reset ─────────────────────────────────────────────────── */
@@ -81,4 +173,50 @@ input, textarea {
 a {
   color: var(--color-accent);
   text-decoration: none;
+}
+
+/* ── Selection — amber glow, not system-blue ───────────────── */
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+}
+
+/* ── Focus — one accent ring, outside only, keyboard-only ─── */
+:focus {
+  outline: none;
+}
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+/* ── Scrollbars — thin, tinted toward accent hue ───────────── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklch, var(--color-border) 80%, var(--color-accent) 20%) transparent;
+}
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--color-border) 80%, var(--color-accent) 20%);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklch, var(--color-border) 60%, var(--color-accent) 40%);
+}
+
+/* ── Reduced motion ────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

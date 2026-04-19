@@ -1,5 +1,5 @@
-import { readJson, writeJson, removeFile } from "./fs";
-import type { SceneDocument, CharacterSheet, PlaceSheet, ID } from "@/types";
+import { readJson, writeJson, removeFile, ensureDir } from "./fs";
+import type { SceneDocument, CharacterSheet, PlaceSheet, MapDocument, ID } from "@/types";
 
 function now() {
   return new Date().toISOString();
@@ -16,9 +16,10 @@ export async function loadScene(
   return (
     (await readJson<SceneDocument>(path)) ?? {
       id,
-      content: { type: "doc", content: [] },
+      content: { type: "doc", content: [{ type: "paragraph" }] },
       wordCount: 0,
       synopsis: "",
+      annotations: {},
       updatedAt: now(),
     }
   );
@@ -108,4 +109,40 @@ export async function savePlace(
 
 export async function deletePlace(projectPath: string, id: ID): Promise<void> {
   await removeFile(`${projectPath}/places/${id}.json`);
+}
+
+// ── Maps ─────────────────────────────────────────────────────
+
+export async function loadMap(
+  projectPath: string,
+  id: ID
+): Promise<MapDocument> {
+  // Ensure maps dir exists for projects created before this feature
+  await ensureDir(`${projectPath}/maps`);
+  const path = `${projectPath}/maps/${id}.json`;
+  return (
+    (await readJson<MapDocument>(path)) ?? {
+      id,
+      elements: [],
+      canvasWidth: 1600,
+      canvasHeight: 1200,
+      updatedAt: now(),
+    }
+  );
+}
+
+export async function saveMap(
+  projectPath: string,
+  doc: MapDocument
+): Promise<void> {
+  // Ensure maps dir exists for projects created before this feature
+  await ensureDir(`${projectPath}/maps`);
+  await writeJson(`${projectPath}/maps/${doc.id}.json`, {
+    ...doc,
+    updatedAt: now(),
+  });
+}
+
+export async function deleteMap(projectPath: string, id: ID): Promise<void> {
+  await removeFile(`${projectPath}/maps/${id}.json`);
 }

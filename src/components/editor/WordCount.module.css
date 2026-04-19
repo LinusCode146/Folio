@@ -1,8 +1,10 @@
 .count {
-  font-size: 11px;
-  color: var(--color-text-muted);
-  padding: var(--space-1) var(--space-4);
+  font-family: var(--font-mono, var(--font-fallback-mono));
+  font-size: var(--text-2xs);
+  color: var(--color-text-faint);
+  padding: var(--space-xs) var(--space-lg);
   border-top: 1px solid var(--color-border);
   text-align: right;
   background: var(--color-surface);
+  letter-spacing: 0.03em;
 }

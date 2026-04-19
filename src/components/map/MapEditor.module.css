@@ -1,0 +1,322 @@
+/*
+ * MapEditor — fantasy map canvas layout.
+ * Inherits all design tokens from globals.css.
+ * Layout: toolbar row (44px) + body (canvas + inspector sidebar).
+ */
+
+/* ── Shell ──────────────────────────────────────────────────── */
+
+.root {
+  display: grid;
+  grid-template-rows: var(--toolbar-height) 1fr;
+  height: 100%;
+  overflow: hidden;
+  background: var(--color-canvas);
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: var(--text-sm);
+  color: var(--color-text-faint);
+}
+
+.body {
+  display: flex;
+  overflow: hidden;
+  flex: 1;
+}
+
+/* ── Toolbar ────────────────────────────────────────────────── */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 0 var(--space-md);
+  height: var(--toolbar-height);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.toolGroup {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.toolSep {
+  width: 1px;
+  height: 20px;
+  background: var(--color-border);
+  margin: 0 var(--space-xs);
+}
+
+.toolBtn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  height: 28px;
+  padding: 0 var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease),
+              color var(--duration-fast) var(--ease);
+}
+
+/* ── Visible hover tooltip for toolbar buttons ─────────────────
+ * Appears 6px below the button with a short delay so a fast
+ * cursor sweep across the bar doesn't flash every tooltip. */
+.toolBtn[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-2px);
+  padding: 4px var(--space-sm);
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: var(--text-2xs);
+  font-family: var(--font-ui, var(--font-fallback-sans));
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  border-radius: var(--radius-xs);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.18);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease) 300ms,
+              transform var(--duration-fast) var(--ease) 300ms;
+  z-index: 50;
+}
+.toolBtn[data-tooltip]:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.toolBtn:disabled[data-tooltip]:hover::after {
+  opacity: 0;  /* don't tease disabled actions */
+}
+
+.toolBtn:hover {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+}
+
+.toolBtn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.toolBtnActive {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+.toolBtnActive:hover {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-hover);
+}
+
+.toolBtnLabel {
+  font-size: var(--text-xs);
+}
+
+.exportMsg {
+  font-size: var(--text-xs);
+  color: var(--color-text-faint);
+  font-family: var(--font-mono, var(--font-fallback-mono));
+  margin-left: var(--space-sm);
+}
+
+/* ── Canvas ─────────────────────────────────────────────────── */
+
+.canvasWrap {
+  flex: 1;
+  overflow: hidden;
+  background: var(--color-canvas);
+  position: relative;
+}
+
+/* ── Inspector ──────────────────────────────────────────────── */
+
+.inspector {
+  width: 240px;
+  flex-shrink: 0;
+  border-left: 1px solid var(--color-border);
+  background: var(--color-surface);
+  overflow-y: auto;
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.inspectorHint {
+  font-size: var(--text-xs);
+  color: var(--color-text-faint);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.inspectorSection {
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.inspectorKind {
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-faint);
+  font-family: var(--font-ui, var(--font-fallback-sans));
+}
+
+.inspectorField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.inspectorLabel {
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-faint);
+}
+
+.inspectorInput {
+  width: 100%;
+  height: 28px;
+  padding: 0 var(--space-sm);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  color: var(--color-text);
+  transition: border-color var(--duration-fast) var(--ease);
+}
+.inspectorInput:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.inspectorSelect {
+  width: 100%;
+  height: 28px;
+  padding: 0 var(--space-sm);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  color: var(--color-text);
+  cursor: pointer;
+}
+.inspectorSelect:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.inspectorLinkBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--text-xs);
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: var(--space-xs) var(--space-sm);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease);
+}
+.inspectorLinkBtn:hover {
+  background: color-mix(in oklch, var(--color-accent) 22%, transparent);
+}
+
+.inspectorRange {
+  width: 100%;
+  accent-color: var(--color-accent);
+}
+
+.inspectorDelete {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-top: auto;
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--text-xs);
+  color: var(--color-danger);
+  background: var(--color-danger-soft);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease);
+}
+.inspectorDelete:hover {
+  background: color-mix(in oklch, var(--color-danger) 20%, transparent);
+}
+
+/* ── Swatches ───────────────────────────────────────────────── */
+
+.swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-xs);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease),
+              border-color var(--duration-fast) var(--ease);
+}
+.swatch:hover {
+  transform: scale(1.15);
+}
+.swatchActive {
+  border-color: var(--color-text);
+}
+
+/* ── Size buttons ───────────────────────────────────────────── */
+
+.sizeGroup {
+  display: flex;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.sizeBtn {
+  min-width: 30px;
+  height: 26px;
+  padding: 0 var(--space-xs);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xs);
+  font-size: var(--text-2xs);
+  font-family: var(--font-mono, var(--font-fallback-mono));
+  color: var(--color-text-muted);
+  background: var(--color-surface-2);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease),
+              color var(--duration-fast) var(--ease);
+}
+.sizeBtn:hover {
+  background: var(--color-surface-3);
+  color: var(--color-text);
+}
+.sizeBtnActive {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}

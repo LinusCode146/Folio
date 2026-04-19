@@ -4,13 +4,14 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { nanoid } from "@/lib/nanoid";
 import { saveProject } from "@/lib/projectService";
-import { deleteScene, deleteCharacter, deletePlace } from "@/lib/documentService";
+import { deleteScene, deleteCharacter, deletePlace, deleteMap } from "@/lib/documentService";
 import type {
   Project,
   BinderNode,
   BinderNodeKind,
   BinderSection,
   BookMeta,
+  NodeStatus,
   ID,
 } from "@/types";
 
@@ -32,6 +33,8 @@ interface ProjectStore {
   renameNode: (id: ID, title: string) => void;
   moveNode: (id: ID, targetParentId: ID | null, index: number) => void;
 
+  setNodeStatus: (id: ID, status: NodeStatus | undefined) => void;
+  updateWordCount: (id: ID, count: number) => void;
   addPlotThread: (label: string) => void;
   deletePlotThread: (threadId: ID) => void;
   updatePlotCell: (sceneId: ID, threadId: ID, text: string) => void;
@@ -44,6 +47,7 @@ function getRootIds(project: Project, section: BinderSection): ID[] {
     case "characters": return project.characterIds;
     case "places": return project.placeIds;
     case "notes": return project.noteIds;
+    case "maps": return project.mapIds;
   }
 }
 
@@ -53,6 +57,7 @@ function removeFromParent(project: Project, id: ID) {
   project.characterIds = project.characterIds.filter((x) => x !== id);
   project.placeIds = project.placeIds.filter((x) => x !== id);
   project.noteIds = project.noteIds.filter((x) => x !== id);
+  project.mapIds = (project.mapIds ?? []).filter((x) => x !== id);
   // Remove from any folder's children
   for (const node of Object.values(project.nodes)) {
     if (node.children) {
@@ -100,6 +105,8 @@ export const useProjectStore = create<ProjectStore>()(
             ? "New Place"
             : kind === "note"
             ? "New Note"
+            : kind === "map"
+            ? "New Map"
             : "New Scene",
         createdAt: now,
         updatedAt: now,
@@ -134,6 +141,7 @@ export const useProjectStore = create<ProjectStore>()(
         if (node.kind === "note") await deleteScene(projectPath, "notes", nodeId);
         if (node.kind === "character") await deleteCharacter(projectPath, nodeId);
         if (node.kind === "place") await deletePlace(projectPath, nodeId);
+        if (node.kind === "map") await deleteMap(projectPath, nodeId);
       }
 
       set((state) => {
@@ -172,6 +180,23 @@ export const useProjectStore = create<ProjectStore>()(
           const rootArr = getRootIds(state.project, node.section);
           rootArr.splice(index, 0, id);
         }
+      });
+      get().save();
+    },
+
+    setNodeStatus: (id, status) => {
+      set((state) => {
+        if (!state.project?.nodes[id]) return;
+        state.project.nodes[id].status = status;
+      });
+      get().save();
+    },
+
+    updateWordCount: (id, count) => {
+      set((state) => {
+        if (!state.project) return;
+        if (!state.project.wordCounts) state.project.wordCounts = {};
+        state.project.wordCounts[id] = count;
       });
       get().save();
     },

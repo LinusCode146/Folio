@@ -2,10 +2,10 @@
   display: flex;
   align-items: center;
   gap: 2px;
-  padding: 0 var(--space-3);
+  padding: 0 var(--space-md);
   height: 38px;
   border-bottom: 1px solid var(--color-border);
-  background: var(--color-surface);
+  background: var(--color-surface-2);
   flex-shrink: 0;
   overflow-x: auto;
 }
@@ -22,17 +22,17 @@
   height: 26px;
   border-radius: var(--radius-sm);
   color: var(--color-text-muted);
-  transition: color var(--transition), background var(--transition);
+  transition: color var(--duration) var(--ease), background var(--duration) var(--ease);
   flex-shrink: 0;
 }
-.btn:hover { color: var(--color-text); background: var(--color-surface-2); }
-.active { color: var(--color-accent) !important; background: var(--color-surface-2); }
+.btn:hover { color: var(--color-text); background: var(--color-surface-3); }
+.active { color: var(--color-accent) !important; background: var(--color-surface-3); }
 
 .sep {
   width: 1px;
-  height: 16px;
+  height: 14px;
   background: var(--color-border);
-  margin: 0 var(--space-1);
+  margin: 0 var(--space-xs);
   flex-shrink: 0;
 }
 
@@ -47,14 +47,14 @@
   align-items: center;
   gap: 4px;
   height: 26px;
-  padding: 0 var(--space-2);
+  padding: 0 var(--space-sm);
   border-radius: var(--radius-sm);
-  font-size: 12px;
+  font-size: var(--text-xs);
   color: var(--color-text);
-  transition: background var(--transition);
+  transition: background var(--duration) var(--ease);
   white-space: nowrap;
 }
-.fontBtn:hover { background: var(--color-surface-2); }
+.fontBtn:hover { background: var(--color-surface-3); }
 
 .fontLabel {
   min-width: 68px;
@@ -66,13 +66,13 @@
   align-items: center;
   gap: 3px;
   height: 26px;
-  padding: 0 var(--space-2);
+  padding: 0 var(--space-sm);
   border-radius: var(--radius-sm);
   color: var(--color-text-muted);
-  transition: color var(--transition), background var(--transition);
+  transition: color var(--duration) var(--ease), background var(--duration) var(--ease);
   flex-shrink: 0;
 }
-.lineBtn:hover { color: var(--color-text); background: var(--color-surface-2); }
+.lineBtn:hover { color: var(--color-text); background: var(--color-surface-3); }
 
 .dropdownMenu {
   position: fixed;
@@ -80,8 +80,8 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-  padding: var(--space-1);
+  box-shadow: 0 4px 24px oklch(0 0 0 / 0.18);
+  padding: var(--space-xs);
   min-width: 180px;
 }
 
@@ -89,10 +89,10 @@
   display: block;
   width: 100%;
   text-align: left;
-  padding: var(--space-2) var(--space-3);
+  padding: var(--space-sm) var(--space-md);
   border-radius: var(--radius-sm);
-  font-size: 13px;
-  transition: background var(--transition);
+  font-size: var(--text-sm);
+  transition: background var(--duration) var(--ease);
 }
 .dropdownItem:hover { background: var(--color-surface-2); }
 .dropdownActive { color: var(--color-accent); font-weight: 600; }
@@ -108,14 +108,14 @@
 .sizeInput {
   width: 42px;
   height: 26px;
-  padding: 0 var(--space-1);
+  padding: 0 var(--space-xs);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-bg);
-  font-size: 12px;
+  font-size: var(--text-xs);
   text-align: center;
   outline: none;
-  transition: border-color var(--transition);
+  transition: border-color var(--duration) var(--ease);
   /* hide number spinners */
   -moz-appearance: textfield;
 }
@@ -132,12 +132,12 @@
   height: 26px;
   padding: 0 5px;
   border-radius: var(--radius-sm);
-  font-size: 11px;
+  font-size: var(--text-2xs);
   color: var(--color-text-muted);
-  transition: color var(--transition), background var(--transition);
+  transition: color var(--duration) var(--ease), background var(--duration) var(--ease);
 }
-.sizePreset:hover { color: var(--color-text); background: var(--color-surface-2); }
-.sizePreset.active { color: var(--color-accent); background: var(--color-surface-2); }
+.sizePreset:hover { color: var(--color-text); background: var(--color-surface-3); }
+.sizePreset.active { color: var(--color-accent); background: var(--color-surface-3); }
 
 /* Table menu */
 .tableMenu {
@@ -146,50 +146,50 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
-  padding: var(--space-2);
+  box-shadow: 0 4px 24px oklch(0 0 0 / 0.20);
+  padding: var(--space-sm);
   min-width: 200px;
 }
 
 .tableMenuSection {
-  padding: var(--space-1) 0;
+  padding: var(--space-xs) 0;
 }
 
 .tableMenuLabel {
-  font-size: 10px;
+  font-size: var(--text-2xs);
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-text-muted);
-  padding: 2px var(--space-2) 4px;
+  letter-spacing: 0.08em;
+  color: var(--color-text-faint);
+  padding: 2px var(--space-sm) 4px;
 }
 
 .tableMenuDivider {
   height: 1px;
   background: var(--color-border);
-  margin: var(--space-1) 0;
+  margin: var(--space-xs) 0;
 }
 
 .tableMenuBtn {
   display: block;
   width: 100%;
   text-align: left;
-  padding: 5px var(--space-2);
+  padding: 5px var(--space-sm);
   border-radius: var(--radius-sm);
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--color-text);
-  transition: background var(--transition);
+  transition: background var(--duration) var(--ease);
 }
 .tableMenuBtn:hover { background: var(--color-surface-2); }
 .tableMenuDanger { color: var(--color-danger); }
-.tableMenuDanger:hover { background: rgba(255, 80, 80, 0.08); }
+.tableMenuDanger:hover { background: var(--color-danger-soft); }
 
 /* Grid picker */
 .gridPicker {
   display: grid;
   grid-template-columns: repeat(8, 20px);
   gap: 2px;
-  padding: var(--space-1) var(--space-2);
+  padding: var(--space-xs) var(--space-sm);
 }
 
 .gridCell {
@@ -199,10 +199,10 @@
   border-radius: 2px;
   background: var(--color-bg);
   cursor: pointer;
-  transition: background var(--transition), border-color var(--transition);
+  transition: background var(--duration) var(--ease), border-color var(--duration) var(--ease);
 }
 .gridCell:hover { border-color: var(--color-accent); }
 .gridCellActive {
-  background: color-mix(in srgb, var(--color-accent) 20%, transparent);
+  background: var(--color-accent-soft);
   border-color: var(--color-accent);
 }

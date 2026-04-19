@@ -12,7 +12,7 @@ import {
   type DragOverEvent,
   type DragStartEvent,
 } from "@dnd-kit/core";
-import { FileText, Folder, User, MapPin, StickyNote, Search, X, BookOpen } from "lucide-react";
+import { FileText, Folder, User, MapPin, StickyNote, Search, X, BookOpen, Globe } from "lucide-react";
 import { BinderSection } from "./BinderSection";
 import { BinderNodeTree } from "./BinderNodeTree";
 import { BinderDragContext } from "./BinderDragContext";
@@ -39,6 +39,7 @@ function getSiblings(project: Project, parentId: ID | null, section: Section): I
     case "characters": return project.characterIds;
     case "places":     return project.placeIds;
     case "notes":      return project.noteIds;
+    case "maps":       return project.mapIds ?? [];
   }
 }
 
@@ -56,6 +57,7 @@ const overlayIcon: Record<BinderNodeKind, React.ReactNode> = {
   character: <User size={13} />,
   place:     <MapPin size={13} />,
   note:      <StickyNote size={13} />,
+  map:       <Globe size={13} />,
 };
 
 // ── per-section DnD wrapper ────────────────────────────────────────
@@ -210,6 +212,7 @@ export function Binder() {
           <SectionDnd section="characters" rootIds={project.characterIds}       title="Characters" itemKind="character" addLabel="Add Character" />
           <SectionDnd section="places"     rootIds={project.placeIds}           title="Places"     itemKind="place"     addLabel="Add Place"     />
           <SectionDnd section="notes"      rootIds={project.noteIds}            title="Notes"      itemKind="note"      addLabel="Add Note"      />
+          <SectionDnd section="maps"       rootIds={project.mapIds ?? []}       title="Maps"       itemKind="map"       addLabel="Add Map"       />
         </>
       )}
     </aside>

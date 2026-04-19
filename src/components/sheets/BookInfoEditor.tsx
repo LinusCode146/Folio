@@ -10,11 +10,15 @@ export function BookInfoEditor() {
   const updateBookMeta = useProjectStore((s) => s.updateBookMeta);
 
   const [local, setLocal] = useState<BookMeta>({
-    author: "", subtitle: "", dedication: "", copyright: "", year: "", isbn: "",
+    author: "", subtitle: "", dedication: "", copyright: "", year: "", isbn: "", targetWordCount: undefined,
   });
+  const [targetInput, setTargetInput] = useState("");
 
   useEffect(() => {
-    if (project?.bookMeta) setLocal(project.bookMeta);
+    if (project?.bookMeta) {
+      setLocal(project.bookMeta);
+      setTargetInput(project.bookMeta.targetWordCount ? String(project.bookMeta.targetWordCount) : "");
+    }
   }, [project?.bookMeta]);
 
   if (!project) return null;
@@ -85,6 +89,34 @@ export function BookInfoEditor() {
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>Front Matter</h2>
             {field("Dedication", "dedication", true, "For…")}
+          </div>
+
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Writing Goals</h2>
+            <div className={styles.field}>
+              <label className={styles.label}>Target Word Count</label>
+              <input
+                className={styles.input}
+                type="number"
+                min="0"
+                step="1000"
+                placeholder="e.g. 90000"
+                value={targetInput}
+                onChange={(e) => setTargetInput(e.target.value)}
+                onBlur={() => {
+                  const n = parseInt(targetInput, 10);
+                  const updated = { ...local, targetWordCount: !isNaN(n) && n > 0 ? n : undefined };
+                  setLocal(updated);
+                  updateBookMeta(updated);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") (e.target as HTMLInputElement).blur();
+                }}
+              />
+              <span className={styles.fieldHint}>
+                Typical novels: 70,000–100,000 words. Progress shown in Statistics.
+              </span>
+            </div>
           </div>
         </div>
       </div>

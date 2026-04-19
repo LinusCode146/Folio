@@ -79,7 +79,12 @@ export function Corkboard({ childIds }: Props) {
               onClick={() => setActiveNode(id, "manuscript")}
               title={node.title}
             >
-              <div className={styles.cardTitle}>{node.title}</div>
+              <div className={styles.cardHeader}>
+                <div className={styles.cardTitle}>{node.title}</div>
+                {node.status && (
+                  <span className={`${styles.cardStatusDot} ${styles[`status_${node.status}`]}`} />
+                )}
+              </div>
               {synopsis ? (
                 <p className={styles.cardSynopsis}>{synopsis}</p>
               ) : prose ? (

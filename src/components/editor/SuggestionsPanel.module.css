@@ -1,0 +1,334 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ── Header (mode toggle + bulk actions) ─────────────────── */
+
+.header {
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+}
+
+.modeRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.modeLabel {
+  font-family: var(--font-ui, var(--font-fallback-sans));
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text);
+  letter-spacing: 0.01em;
+}
+
+.switch {
+  width: 32px;
+  height: 18px;
+  border-radius: 100px;
+  background: var(--color-surface-3);
+  border: 1px solid var(--color-border);
+  position: relative;
+  transition: background var(--duration) var(--ease), border-color var(--duration) var(--ease);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.switchKnob {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.12);
+  transition: transform var(--duration) var(--ease), background var(--duration) var(--ease);
+}
+.switchOn {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+.switchOn .switchKnob {
+  transform: translateX(14px);
+  background: var(--color-surface);
+}
+
+.modeHint {
+  font-size: var(--text-xs);
+  color: var(--color-text-faint);
+  font-family: var(--font-ui, var(--font-fallback-sans));
+  line-height: 1.5;
+  margin: 0;
+}
+
+.bulkRow {
+  display: flex;
+  gap: var(--space-xs);
+  margin-top: var(--space-xs);
+}
+
+.bulkBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  justify-content: center;
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-family: var(--font-ui, var(--font-fallback-sans));
+  font-size: var(--text-2xs);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition: background var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease);
+}
+.bulkBtn:hover {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+}
+
+/* ── Scrolling suggestion list ───────────────────────────── */
+
+.list {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-md) var(--space-lg) var(--space-2xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+.list::-webkit-scrollbar { width: 4px; }
+.list::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--color-border) 80%, var(--color-accent) 20%);
+  border-radius: 2px;
+}
+
+/* ── Empty state ─────────────────────────────────────────── */
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-3xl) var(--space-md);
+  text-align: center;
+  color: var(--color-text-faint);
+}
+.emptyIcon { opacity: 0.5; }
+.emptyTitle {
+  font-family: var(--font-display, var(--font-fallback-serif));
+  font-style: italic;
+  font-size: var(--text-base);
+  margin: 0;
+  color: var(--color-text-muted);
+}
+.emptyHint {
+  font-size: var(--text-xs);
+  margin: 0;
+  line-height: 1.5;
+  max-width: 220px;
+}
+
+/* ── Suggestion card ─────────────────────────────────────── */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: border-color var(--duration-fast) var(--ease), box-shadow var(--duration-fast) var(--ease);
+}
+.card:hover {
+  border-color: color-mix(in oklch, var(--color-border) 50%, var(--color-accent) 50%);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--space-sm);
+  border-radius: 100px;
+  font-family: var(--font-ui, var(--font-fallback-sans));
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.badgeInsert {
+  background: oklch(0.85 0.09 148 / 0.3);
+  color: oklch(0.42 0.13 148);
+}
+.badgeDelete {
+  background: oklch(0.85 0.09 25 / 0.3);
+  color: oklch(0.45 0.15 25);
+}
+.badgeReplace {
+  background: var(--color-accent-soft, color-mix(in oklch, var(--color-accent) 18%, transparent));
+  color: var(--color-accent-ink, var(--color-accent));
+}
+
+[data-theme="dark"] .badgeInsert {
+  background: oklch(0.38 0.1 148 / 0.4);
+  color: oklch(0.82 0.11 148);
+}
+[data-theme="dark"] .badgeDelete {
+  background: oklch(0.38 0.12 25 / 0.4);
+  color: oklch(0.82 0.13 25);
+}
+
+.cardTime {
+  font-family: var(--font-mono, var(--font-fallback-mono));
+  font-size: var(--text-2xs);
+  color: var(--color-text-faint);
+  letter-spacing: 0.02em;
+}
+
+.context {
+  font-family: var(--font-manuscript, var(--font-fallback-serif));
+  font-size: var(--text-xs);
+  color: var(--color-text-faint);
+  font-style: italic;
+  margin: 0;
+  line-height: 1.5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  direction: rtl; /* keep the tail (closest to edit point) visible */
+  text-align: left;
+}
+.contextCaret {
+  color: var(--color-accent);
+  font-weight: 600;
+  margin-left: 2px;
+}
+
+/* ── Inline diff preview ─────────────────────────────────── */
+
+.diff {
+  font-family: var(--font-manuscript, var(--font-fallback-serif));
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-canvas);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  word-break: break-word;
+}
+
+.diffDel {
+  text-decoration: line-through;
+  color: oklch(0.5 0.14 25);
+  background: oklch(0.9 0.06 25 / 0.3);
+  padding: 0 2px;
+  border-radius: 2px;
+  margin-right: 2px;
+}
+.diffIns {
+  text-decoration: none;
+  color: oklch(0.42 0.13 148);
+  background: oklch(0.9 0.07 148 / 0.35);
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+[data-theme="dark"] .diffDel {
+  color: oklch(0.82 0.13 25);
+  background: oklch(0.35 0.1 25 / 0.5);
+}
+[data-theme="dark"] .diffIns {
+  color: oklch(0.82 0.11 148);
+  background: oklch(0.35 0.09 148 / 0.5);
+}
+
+/* ── Comment box ─────────────────────────────────────────── */
+
+.commentBox {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-canvas);
+  font-family: var(--font-ui, var(--font-fallback-sans));
+  font-size: var(--text-xs);
+  color: var(--color-text);
+  resize: vertical;
+  line-height: 1.5;
+  outline: none;
+  transition: border-color var(--duration-fast) var(--ease);
+}
+.commentBox:focus {
+  border-color: var(--color-accent);
+}
+.commentBox::placeholder {
+  color: var(--color-text-faint);
+  font-style: italic;
+}
+
+/* ── Accept / Reject footer ──────────────────────────────── */
+
+.cardActions {
+  display: flex;
+  gap: var(--space-xs);
+  justify-content: flex-end;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  font-family: var(--font-ui, var(--font-fallback-sans));
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease);
+}
+.rejectBtn:hover {
+  background: oklch(0.9 0.06 25 / 0.3);
+  color: oklch(0.45 0.15 25);
+  border-color: oklch(0.7 0.12 25 / 0.4);
+}
+.acceptBtn:hover {
+  background: oklch(0.9 0.07 148 / 0.35);
+  color: oklch(0.42 0.13 148);
+  border-color: oklch(0.65 0.12 148 / 0.4);
+}
+
+[data-theme="dark"] .rejectBtn:hover {
+  background: oklch(0.38 0.12 25 / 0.4);
+  color: oklch(0.85 0.13 25);
+  border-color: oklch(0.6 0.15 25 / 0.5);
+}
+[data-theme="dark"] .acceptBtn:hover {
+  background: oklch(0.38 0.1 148 / 0.4);
+  color: oklch(0.85 0.11 148);
+  border-color: oklch(0.6 0.13 148 / 0.5);
+}

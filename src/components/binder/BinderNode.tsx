@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { FileText, Folder, FolderOpen, User, MapPin, StickyNote, ChevronRight } from "lucide-react";
+import { FileText, Folder, FolderOpen, User, MapPin, StickyNote, ChevronRight, Globe } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { ContextMenu, type ContextMenuItem } from "@/components/ui/ContextMenu";
@@ -27,6 +27,7 @@ const kindIcon = (kind: BinderNodeType["kind"], expanded?: boolean) => {
     case "character": return <User size={14} />;
     case "place":     return <MapPin size={14} />;
     case "note":      return <StickyNote size={14} />;
+    case "map":       return <Globe size={14} />;
   }
 };
 
@@ -36,6 +37,7 @@ const itemLabel: Record<BinderNodeType["kind"], string> = {
   character: "Character",
   place:     "Place",
   note:      "Note",
+  map:       "Map",
 };
 
 export function BinderNodeRow({
@@ -47,7 +49,7 @@ export function BinderNodeRow({
   onAddFolder,
 }: BinderNodeProps) {
   const { activeNodeId, setActiveNode } = useEditorStore();
-  const { renameNode, deleteNode } = useProjectStore();
+  const { renameNode, deleteNode, setNodeStatus } = useProjectStore();
   const { overFolderId, activeId } = useBinderDrag();
 
   const [editing, setEditing] = useState(false);
@@ -82,6 +84,16 @@ export function BinderNodeRow({
     setEditing(false);
   }, [editTitle, node.id, node.title, renameNode]);
 
+  const statusItems: ContextMenuItem[] = node.kind === "scene" || node.kind === "note"
+    ? [
+        { label: "Outline", dot: "var(--status-outline)", onClick: () => setNodeStatus(node.id, "outline") },
+        { label: "Draft",   dot: "var(--status-draft)",   onClick: () => setNodeStatus(node.id, "draft") },
+        { label: "Revised", dot: "var(--status-revised)", onClick: () => setNodeStatus(node.id, "revised") },
+        { label: "Final",   dot: "var(--status-final)",   onClick: () => setNodeStatus(node.id, "final") },
+        { label: "Clear status", onClick: () => setNodeStatus(node.id, undefined) },
+      ]
+    : [];
+
   const menuItems: ContextMenuItem[] = [
     ...(node.kind === "folder" && onAddItem
       ? [{ label: "Add Item", onClick: onAddItem }]
@@ -90,6 +102,7 @@ export function BinderNodeRow({
       ? [{ label: "Add Folder", onClick: onAddFolder }]
       : []),
     { label: "Rename", onClick: handleRename },
+    ...statusItems,
     { label: "Delete", onClick: () => deleteNode(node.id), danger: true },
   ];
 
@@ -123,6 +136,9 @@ export function BinderNodeRow({
           />
         )}
         <span className={styles.icon}>{kindIcon(node.kind, isExpanded)}</span>
+        {node.status && (
+          <span className={`${styles.statusDot} ${styles[`status_${node.status}`]}`} />
+        )}
         {editing ? (
           <input
             ref={inputRef}

@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { Modal } from "@/components/ui/Modal";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { ProjectCard } from "./ProjectCard";
@@ -11,7 +10,6 @@ import type { ProjectRef } from "@/types";
 import styles from "./ProjectHub.module.css";
 
 export function ProjectHub() {
-  const router = useRouter();
   const [projects, setProjects] = useState<ProjectRef[]>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<ProjectRef | null>(null);
@@ -30,7 +28,7 @@ export function ProjectHub() {
     const project = await createProject(newName.trim());
     setShowCreateModal(false);
     setNewName("");
-    router.push(`/project?id=${project.id}`);
+    window.location.href = `/project?id=${project.id}`;
   }
 
   async function handleConfirmDelete() {
@@ -41,7 +39,7 @@ export function ProjectHub() {
   }
 
   function handleOpen(ref: ProjectRef) {
-    router.push(`/project?id=${ref.id}`);
+    window.location.href = `/project?id=${ref.id}`;
   }
 
   return (

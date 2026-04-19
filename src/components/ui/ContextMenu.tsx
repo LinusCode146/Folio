@@ -7,6 +7,7 @@ export interface ContextMenuItem {
   label: string;
   onClick: () => void;
   danger?: boolean;
+  dot?: string; // CSS color for an inline dot indicator
 }
 
 interface ContextMenuProps {
@@ -44,6 +45,9 @@ export function ContextMenu({ x, y, items, onClose }: ContextMenuProps) {
           className={`${styles.item} ${item.danger ? styles.danger : ""}`}
           onClick={() => { item.onClick(); onClose(); }}
         >
+          {item.dot && (
+            <span className={styles.dot} style={{ background: item.dot }} />
+          )}
           {item.label}
         </button>
       ))}

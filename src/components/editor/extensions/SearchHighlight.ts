@@ -32,7 +32,11 @@ function buildDecorations(doc: Node, term: string): DecorationSet {
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
-    search: { setSearchTerm: (term: string) => ReturnType };
+    search: {
+      setSearchTerm: (term: string) => ReturnType;
+      replaceCurrentMatch: (replacement: string, index: number) => ReturnType;
+      replaceAllMatches: (replacement: string) => ReturnType;
+    };
   }
 }
 
@@ -66,6 +70,41 @@ export const SearchHighlight = Extension.create({
           editor.view.dispatch(
             editor.view.state.tr.setMeta(searchPluginKey, term)
           );
+          return true;
+        },
+
+      replaceCurrentMatch:
+        (replacement: string, index: number) =>
+        ({ editor }) => {
+          const term = searchPluginKey.getState(editor.state)?.term ?? "";
+          const positions = getMatchPositions(editor.state.doc, term);
+          if (positions.length === 0 || index < 0 || index >= positions.length) return false;
+          const { from, to } = positions[index];
+          const { tr, schema } = editor.state;
+          if (replacement) {
+            editor.view.dispatch(tr.replaceWith(from, to, schema.text(replacement)));
+          } else {
+            editor.view.dispatch(tr.delete(from, to));
+          }
+          return true;
+        },
+
+      replaceAllMatches:
+        (replacement: string) =>
+        ({ editor }) => {
+          const term = searchPluginKey.getState(editor.state)?.term ?? "";
+          const positions = getMatchPositions(editor.state.doc, term);
+          if (positions.length === 0) return false;
+          const { tr, schema } = editor.state;
+          // Reverse order so earlier positions aren't shifted by later replacements
+          [...positions].reverse().forEach(({ from, to }) => {
+            if (replacement) {
+              tr.replaceWith(from, to, schema.text(replacement));
+            } else {
+              tr.delete(from, to);
+            }
+          });
+          editor.view.dispatch(tr);
           return true;
         },
     };

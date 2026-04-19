@@ -6,20 +6,29 @@
 }
 
 .header {
-  padding: var(--space-4) var(--space-5);
+  padding: var(--space-lg) var(--space-xl);
   border-bottom: 1px solid var(--color-border);
   background: var(--color-surface);
 }
 
 .title {
-  font-size: 16px;
-  font-weight: 700;
+  font-family: var(--font-display, var(--font-fallback-serif));
+  font-size: var(--text-lg);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--color-text);
 }
 
 .tableWrapper {
   flex: 1;
   overflow: auto;
-  padding: var(--space-4);
+  padding: var(--space-lg);
+}
+
+.tableWrapper::-webkit-scrollbar { width: 4px; height: 4px; }
+.tableWrapper::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--color-border) 80%, var(--color-accent) 20%);
+  border-radius: 2px;
 }
 
 .table {
@@ -30,14 +39,14 @@
 .cornerCell {
   width: 160px;
   min-width: 160px;
-  padding: var(--space-2) var(--space-3);
+  padding: var(--space-sm) var(--space-md);
   text-align: left;
-  font-size: 11px;
+  font-size: var(--text-2xs);
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--color-text-muted);
-  border-bottom: 2px solid var(--color-border);
+  letter-spacing: 0.08em;
+  color: var(--color-text-faint);
+  border-bottom: 1px solid var(--color-border-strong);
   background: var(--color-surface);
   position: sticky;
   left: 0;
@@ -45,41 +54,41 @@
 
 .threadHeader {
   min-width: 160px;
-  padding: var(--space-2) var(--space-3);
-  border-bottom: 2px solid var(--color-border);
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--color-border-strong);
   background: var(--color-surface);
 }
 
 .threadHeaderInner {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-sm);
 }
 
 .threadDot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
 .threadLabel {
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 600;
   flex: 1;
 }
 
 .deleteThread {
-  color: var(--color-text-muted);
+  color: var(--color-text-faint);
   opacity: 0;
-  transition: opacity var(--transition), color var(--transition);
+  transition: opacity var(--duration) var(--ease), color var(--duration) var(--ease);
 }
 .threadHeader:hover .deleteThread { opacity: 1; }
 .deleteThread:hover { color: var(--color-danger); }
 
 .addThreadCell {
-  padding: var(--space-2) var(--space-3);
-  border-bottom: 2px solid var(--color-border);
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--color-border-strong);
   background: var(--color-surface);
   min-width: 120px;
 }
@@ -87,16 +96,16 @@
 .newThreadInput {
   border: none;
   background: transparent;
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--color-text-muted);
   outline: none;
   width: 100%;
 }
-.newThreadInput::placeholder { color: var(--color-text-muted); }
+.newThreadInput::placeholder { color: var(--color-text-faint); }
 
 .sceneCell {
-  padding: var(--space-2) var(--space-3);
-  font-size: 13px;
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--text-sm);
   font-weight: 500;
   border-bottom: 1px solid var(--color-border);
   border-right: 1px solid var(--color-border);
@@ -110,8 +119,10 @@
 }
 
 .empty {
-  padding: var(--space-5);
+  padding: var(--space-xl);
   color: var(--color-text-muted);
-  font-size: 13px;
+  font-size: var(--text-sm);
   text-align: center;
+  font-family: var(--font-manuscript, var(--font-fallback-serif));
+  font-style: italic;
 }

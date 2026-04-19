@@ -18,6 +18,7 @@ export function createMockProject(overrides?: Partial<Project>): Project {
     characterIds: [],
     placeIds: [],
     noteIds: [],
+    mapIds: [],
     nodes: {},
     plotGrid: { threads: [], cells: {} },
     bookMeta: {

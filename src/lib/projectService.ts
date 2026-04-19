@@ -40,6 +40,7 @@ export async function createProject(name: string): Promise<Project> {
   await ensureDir(`${projectPath}/notes`);
   await ensureDir(`${projectPath}/characters`);
   await ensureDir(`${projectPath}/places`);
+  await ensureDir(`${projectPath}/maps`);
 
   const emptyGrid: PlotGridMeta = { threads: [], cells: {} };
 
@@ -52,6 +53,7 @@ export async function createProject(name: string): Promise<Project> {
     characterIds: [],
     placeIds: [],
     noteIds: [],
+    mapIds: [],
     nodes: {},
     plotGrid: emptyGrid,
     bookMeta: { author: "", subtitle: "", dedication: "", copyright: "", year: "", isbn: "" },
@@ -72,6 +74,9 @@ export async function loadProject(projectPath: string): Promise<Project | null> 
   // Backward compat: add bookMeta if missing (projects created before this feature)
   if (!project.bookMeta) {
     project.bookMeta = { author: "", subtitle: "", dedication: "", copyright: "", year: "", isbn: "" };
+  }
+  if (!project.mapIds) {
+    project.mapIds = [];
   }
   return project;
 }

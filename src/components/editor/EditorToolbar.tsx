@@ -4,8 +4,9 @@ import { useCallback, useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import type { Editor } from "@tiptap/react";
 import {
-  Bold, Italic, Heading1, Heading2, List, ListOrdered, ChevronDown, AlignJustify, Table2, PanelRight,
+  Bold, Italic, Heading1, Heading2, List, ListOrdered, ChevronDown, AlignJustify, Table2, PanelRight, AlignCenter, Focus, MessageSquare, Camera, GitPullRequestArrow,
 } from "lucide-react";
+import { useEditorStore } from "@/store/editorStore";
 import styles from "./EditorToolbar.module.css";
 
 const FONT_FAMILIES = [
@@ -33,12 +34,16 @@ const LINE_HEIGHTS = [
 
 interface Props {
   editor: Editor;
-  onToggleSynopsis?: () => void;
-  synopsisOpen?: boolean;
+  activeSidebar?: "synopsis" | "annotations" | "snapshots" | "suggestions" | null;
+  onToggleSidebar?: (tab: "synopsis" | "annotations" | "snapshots" | "suggestions") => void;
 }
 
-export function EditorToolbar({ editor, onToggleSynopsis, synopsisOpen }: Props) {
+export function EditorToolbar({ editor, activeSidebar, onToggleSidebar }: Props) {
+  const { typewriterMode, focusMode, toggleTypewriterMode, toggleFocusMode } = useEditorStore();
   const [sizeInput, setSizeInput] = useState("12");
+  const [currentLineHeight, setCurrentLineHeight] = useState<string>(
+    editor.storage.lineHeight?.current ?? "1"
+  );
   const [fontOpen, setFontOpen] = useState(false);
   const [fontPos, setFontPos] = useState({ top: 0, left: 0 });
   const fontBtnRef = useRef<HTMLButtonElement>(null);
@@ -52,11 +57,12 @@ export function EditorToolbar({ editor, onToggleSynopsis, synopsisOpen }: Props)
   const tableBtnRef = useRef<HTMLButtonElement>(null);
   const [gridHover, setGridHover] = useState({ cols: 0, rows: 0 });
 
-  // Sync size input from selection
+  // Sync size input + line-height display from editor state
   useEffect(() => {
     const update = () => {
       const attrs = editor.getAttributes("textStyle");
       setSizeInput(attrs.fontSize ?? "12");
+      setCurrentLineHeight(editor.storage.lineHeight?.current ?? "1");
     };
     editor.on("selectionUpdate", update);
     editor.on("transaction", update);
@@ -248,22 +254,19 @@ export function EditorToolbar({ editor, onToggleSynopsis, synopsisOpen }: Props)
           className={styles.dropdownMenu}
           style={{ top: linePos.top, left: linePos.left }}
         >
-          {LINE_HEIGHTS.map((lh) => {
-            const current = editor.getAttributes("paragraph").lineHeight ?? editor.getAttributes("heading").lineHeight;
-            return (
-              <button
-                key={lh.value}
-                className={`${styles.dropdownItem} ${current === lh.value ? styles.dropdownActive : ""}`}
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  editor.chain().focus().setLineHeight(lh.value).run();
-                  setLineOpen(false);
-                }}
-              >
-                {lh.label}
-              </button>
-            );
-          })}
+          {LINE_HEIGHTS.map((lh) => (
+            <button
+              key={lh.value}
+              className={`${styles.dropdownItem} ${currentLineHeight === lh.value ? styles.dropdownActive : ""}`}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                editor.chain().focus().setLineHeight(lh.value).run();
+                setLineOpen(false);
+              }}
+            >
+              {lh.label}
+            </button>
+          ))}
         </div>,
         document.body
       )}
@@ -293,18 +296,46 @@ export function EditorToolbar({ editor, onToggleSynopsis, synopsisOpen }: Props)
         <Table2 size={14} />
       </button>
 
-      {onToggleSynopsis && (
+      <div className={styles.spacer} />
+
+      {btn(typewriterMode, toggleTypewriterMode, <AlignCenter size={14} />, "Typewriter scrolling")}
+      {btn(focusMode, toggleFocusMode, <Focus size={14} />, "Focus mode")}
+
+      {onToggleSidebar && (
         <>
-          <div className={styles.spacer} />
+          <div className={styles.sep} />
           <button
-            className={`${styles.btn} ${synopsisOpen ? styles.active : ""}`}
+            className={`${styles.btn} ${activeSidebar === "suggestions" ? styles.active : ""}`}
             onMouseDown={(e) => e.preventDefault()}
-            onClick={onToggleSynopsis}
+            onClick={() => onToggleSidebar("suggestions")}
+            title="Suggestions (track changes)"
+          >
+            <GitPullRequestArrow size={14} />
+          </button>
+          <button
+            className={`${styles.btn} ${activeSidebar === "annotations" ? styles.active : ""}`}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => onToggleSidebar("annotations")}
+            title="Annotations"
+          >
+            <MessageSquare size={14} />
+          </button>
+          <button
+            className={`${styles.btn} ${activeSidebar === "synopsis" ? styles.active : ""}`}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => onToggleSidebar("synopsis")}
             title="Synopsis"
           >
             <PanelRight size={14} />
           </button>
-          <div className={styles.sep} />
+          <button
+            className={`${styles.btn} ${activeSidebar === "snapshots" ? styles.active : ""}`}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => onToggleSidebar("snapshots")}
+            title="Snapshots"
+          >
+            <Camera size={14} />
+          </button>
         </>
       )}
 

@@ -2,83 +2,94 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--color-bg);
+  background: var(--color-canvas);
 }
 
 .scroll {
   flex: 1;
   overflow-y: auto;
-  padding: var(--space-6) var(--space-4);
-  max-width: 640px;
+  padding: var(--space-3xl) var(--space-lg);
+  max-width: var(--max-sheet);
   margin: 0 auto;
   width: 100%;
 }
 
-.scroll::-webkit-scrollbar { width: 6px; }
-.scroll::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+.scroll::-webkit-scrollbar { width: 4px; }
+.scroll::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--color-border) 80%, var(--color-accent) 20%);
+  border-radius: 2px;
+}
 
 .loading {
-  padding: var(--space-4);
+  padding: var(--space-lg);
   color: var(--color-text-muted);
+  font-style: italic;
+  font-family: var(--font-manuscript, var(--font-fallback-serif));
 }
 
 .pageTitle {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: var(--space-5);
-  letter-spacing: -0.3px;
+  font-family: var(--font-display, var(--font-fallback-serif));
+  font-size: var(--text-2xl);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--color-text);
+  margin-bottom: var(--space-3xl);
+  letter-spacing: -0.5px;
+  line-height: 1.2;
 }
 
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: var(--space-3);
-  margin-bottom: var(--space-4);
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
 }
 
 .fieldGroup {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
-  margin-bottom: var(--space-4);
+  gap: var(--space-xs);
+  margin-bottom: var(--space-lg);
 }
 
 .label {
-  font-size: 11px;
+  font-size: var(--text-2xs);
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--color-text-muted);
+  letter-spacing: 0.08em;
+  color: var(--color-text-faint);
+  font-family: var(--font-ui, var(--font-fallback-sans));
 }
 
 .input {
-  padding: var(--space-2) var(--space-3);
+  padding: var(--space-sm) var(--space-md);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   background: var(--color-surface);
-  font-size: 14px;
+  font-size: var(--text-base);
   outline: none;
-  transition: border-color var(--transition);
+  transition: border-color var(--duration) var(--ease);
 }
 .input:focus { border-color: var(--color-accent); }
 
 .textarea {
-  padding: var(--space-2) var(--space-3);
+  padding: var(--space-sm) var(--space-md);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   background: var(--color-surface);
-  font-size: 14px;
+  font-family: var(--font-manuscript, var(--font-fallback-serif));
+  font-size: var(--text-base);
   outline: none;
   resize: vertical;
-  line-height: 1.6;
-  transition: border-color var(--transition);
+  line-height: 1.65;
+  transition: border-color var(--duration) var(--ease);
 }
 .textarea:focus { border-color: var(--color-accent); }
 
 .traits {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-1);
+  gap: var(--space-xs);
   align-items: center;
 }
 
@@ -89,16 +100,165 @@
   background: var(--color-surface-2);
   border: 1px solid var(--color-border);
   border-radius: 100px;
-  padding: 2px var(--space-2);
-  font-size: 12px;
+  padding: 2px var(--space-sm);
+  font-size: var(--text-xs);
 }
-.trait button { display: flex; align-items: center; color: var(--color-text-muted); }
+.trait button { display: flex; align-items: center; color: var(--color-text-faint); }
 .trait button:hover { color: var(--color-danger); }
 
 .traitInput {
   border: none;
   background: transparent;
-  font-size: 13px;
+  font-size: var(--text-sm);
   outline: none;
   min-width: 100px;
+}
+
+/* ── Novel-writing detail sheet ──────────────────────────────
+ * Sections use <details>/<summary> for native collapse behaviour.
+ * Writer's-Study aesthetic: italic serif section headings, slim
+ * divider line, small chevron. Rhythm comes from vertical space,
+ * never from card containers. */
+
+.sheetWrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.section {
+  /* <details> element — no default card/border framing */
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-lg);
+}
+
+/* Hide the default disclosure triangle in Chrome/Safari */
+.section > .sectionSummary::-webkit-details-marker {
+  display: none;
+}
+.section > .sectionSummary {
+  list-style: none;
+}
+
+.sectionSummary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  cursor: pointer;
+  padding-bottom: var(--space-md);
+  user-select: none;
+  outline: none;
+}
+
+.sectionHeading {
+  font-family: var(--font-display, var(--font-fallback-serif));
+  font-size: var(--text-lg);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--color-text);
+  letter-spacing: -0.2px;
+  line-height: 1.15;
+}
+
+.sectionHint {
+  font-size: var(--text-2xs);
+  color: var(--color-text-faint);
+  font-family: var(--font-ui, var(--font-fallback-sans));
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease);
+}
+.section:hover .sectionHint {
+  opacity: 0.65;
+}
+
+/* Rotate an arrow glyph when section is open */
+.sectionChevron {
+  flex-shrink: 0;
+  transition: transform var(--duration) var(--ease);
+  color: var(--color-text-faint);
+}
+.section[open] .sectionChevron {
+  transform: rotate(90deg);
+  color: var(--color-accent);
+}
+
+.sectionBody {
+  padding-top: var(--space-sm);
+  padding-bottom: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Fine-grained grid for identity/appearance sections — 2 or 3 columns
+ * depending on the sheet's available width */
+.sectionGrid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md) var(--space-lg);
+}
+.sectionGrid3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-md) var(--space-lg);
+}
+
+@media (max-width: 640px) {
+  .sectionGrid2, .sectionGrid3 { grid-template-columns: 1fr; }
+}
+
+/* Compact textarea — for sensory fields, short paragraphs */
+.compactTextarea {
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-family: var(--font-manuscript, var(--font-fallback-serif));
+  font-size: var(--text-base);
+  outline: none;
+  resize: vertical;
+  line-height: 1.5;
+  min-height: 60px;
+  transition: border-color var(--duration) var(--ease);
+}
+.compactTextarea:focus { border-color: var(--color-accent); }
+
+/* Page-level meta line under the title (e.g. last updated) */
+.subtitle {
+  font-size: var(--text-xs);
+  color: var(--color-text-faint);
+  font-family: var(--font-mono, var(--font-fallback-mono));
+  letter-spacing: 0.02em;
+  margin-top: calc(var(--space-2xl) * -1 + var(--space-xs));
+  margin-bottom: var(--space-3xl);
+}
+
+/* Tag group label differentiation — the subheading above each
+ * traits/flaws/fears row */
+.tagGroupLabel {
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-faint);
+  font-family: var(--font-ui, var(--font-fallback-sans));
+  margin-bottom: var(--space-xs);
+}
+
+/* A wider scroll column for sheets that now have more content */
+.scrollWide {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-3xl) var(--space-xl);
+  max-width: 780px;
+  margin: 0 auto;
+  width: 100%;
+}
+.scrollWide::-webkit-scrollbar { width: 4px; }
+.scrollWide::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--color-border) 80%, var(--color-accent) 20%);
+  border-radius: 2px;
 }

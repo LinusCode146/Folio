@@ -1,0 +1,60 @@
+.root {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-xs) var(--space-lg);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--duration) var(--ease);
+}
+
+.root:hover {
+  background: var(--color-surface-2);
+}
+
+.done {
+  background: color-mix(in oklch, var(--status-final) 8%, var(--color-surface));
+}
+
+.label {
+  font-size: var(--text-2xs);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+
+.input {
+  font-size: var(--text-2xs);
+  font-family: var(--font-mono, var(--font-fallback-mono));
+  width: 72px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  padding: 1px var(--space-xs);
+  outline: none;
+  color: var(--color-text);
+  flex-shrink: 0;
+}
+
+.track {
+  flex: 1;
+  height: 3px;
+  background: var(--color-surface-2);
+  border-radius: 2px;
+  overflow: hidden;
+  min-width: 40px;
+}
+
+.fill {
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: 2px;
+  transition: width var(--duration-slow) var(--ease);
+}
+
+.done .fill {
+  background: var(--status-final);
+}

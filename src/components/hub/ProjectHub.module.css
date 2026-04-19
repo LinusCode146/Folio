@@ -1,133 +1,159 @@
+/*
+ * Project Hub — the first impression.
+ * Left-aligned, asymmetric editorial layout. The Bodoni Moda wordmark is the
+ * visual anchor; the project list is a clean editorial table, not a card grid.
+ */
+
 .root {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--color-bg);
+  background: var(--color-canvas);
 }
 
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-4) var(--space-6);
+  padding: var(--space-xl) var(--space-3xl);
   border-bottom: 1px solid var(--color-border);
   background: var(--color-surface);
 }
 
+/* Bodoni Moda wordmark — the editorial anchor */
 .logo {
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
+  font-family: var(--font-display, var(--font-fallback-serif));
+  font-size: var(--text-xl);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.5px;
+  color: var(--color-text);
+}
+
+/* Accent dot after the wordmark */
+.logo::after {
+  content: "·";
   color: var(--color-accent);
+  margin-left: 4px;
 }
 
 .main {
   flex: 1;
-  max-width: 760px;
+  max-width: 720px;
   width: 100%;
   margin: 0 auto;
-  padding: var(--space-6) var(--space-4);
+  padding: var(--space-3xl) var(--space-xl);
 }
 
+/* Top bar is left-aligned — intentionally asymmetric */
 .topBar {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-xl);
 }
 
 .heading {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-text-faint);
+  font-family: var(--font-ui, var(--font-fallback-sans));
 }
 
 .newBtn {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
+  gap: var(--space-xs);
   background: var(--color-accent);
-  color: #fff;
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-md);
-  font-size: 13px;
-  font-weight: 500;
-  transition: background var(--transition);
+  color: var(--color-on-accent);
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: opacity var(--duration) var(--ease);
 }
-.newBtn:hover { background: var(--color-accent-hover); }
+.newBtn:hover { opacity: 0.85; }
 
+/* Project list — editorial column table, not equal-weight cards */
 .grid {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
 }
 
 .empty {
-  color: var(--color-text-muted);
-  font-size: 14px;
-  text-align: center;
-  margin-top: var(--space-6);
+  color: var(--color-text-faint);
+  font-size: var(--text-sm);
+  font-family: var(--font-manuscript, var(--font-fallback-serif));
+  font-style: italic;
+  margin-top: var(--space-2xl);
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-md);
 }
 
 .input {
   width: 100%;
-  padding: var(--space-2) var(--space-3);
+  padding: var(--space-sm) var(--space-md);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   background: var(--color-bg);
-  font-size: 14px;
+  font-size: var(--text-base);
   outline: none;
-  transition: border-color var(--transition);
+  transition: border-color var(--duration) var(--ease);
 }
 .input:focus { border-color: var(--color-accent); }
 
 .createBtn {
   align-self: flex-end;
   background: var(--color-accent);
-  color: #fff;
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-md);
-  font-size: 13px;
-  font-weight: 500;
-  transition: background var(--transition);
+  color: var(--color-on-accent);
+  padding: var(--space-xs) var(--space-lg);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  transition: opacity var(--duration) var(--ease);
 }
-.createBtn:hover:not(:disabled) { background: var(--color-accent-hover); }
+.createBtn:hover:not(:disabled) { opacity: 0.85; }
 .createBtn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .confirmText {
-  font-size: 14px;
-  margin-bottom: var(--space-4);
-  line-height: 1.5;
+  font-size: var(--text-sm);
+  font-family: var(--font-manuscript, var(--font-fallback-serif));
+  margin-bottom: var(--space-lg);
+  line-height: 1.65;
+  color: var(--color-text);
 }
 
 .confirmActions {
   display: flex;
   justify-content: flex-end;
-  gap: var(--space-2);
+  gap: var(--space-sm);
 }
 
 .cancelBtn {
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-md);
-  font-size: 13px;
+  padding: var(--space-xs) var(--space-lg);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
   border: 1px solid var(--color-border);
   background: var(--color-surface-2);
-  transition: background var(--transition);
+  transition: background var(--duration) var(--ease);
+  color: var(--color-text);
 }
-.cancelBtn:hover { background: var(--color-border); }
+.cancelBtn:hover { background: var(--color-surface-3); }
 
 .deleteBtn {
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-md);
-  font-size: 13px;
+  padding: var(--space-xs) var(--space-lg);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
   font-weight: 500;
   background: var(--color-danger);
-  color: #fff;
-  transition: opacity var(--transition);
+  color: var(--color-on-danger);
+  transition: opacity var(--duration) var(--ease);
 }
 .deleteBtn:hover { opacity: 0.85; }

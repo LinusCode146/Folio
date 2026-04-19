@@ -1,36 +1,38 @@
 .section {
-  margin-bottom: var(--space-1);
+  margin-bottom: var(--space-xs);
 }
 
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-1) var(--space-2);
+  padding: var(--space-xs) var(--space-sm);
 }
 
 .toggle {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
+  gap: var(--space-xs);
   flex: 1;
   text-align: left;
   min-width: 0;
 }
 
 .chevron {
-  color: var(--color-text-muted);
-  transition: transform var(--transition);
+  color: var(--color-text-faint);
+  transition: transform var(--duration) var(--ease);
   flex-shrink: 0;
 }
 .open { transform: rotate(90deg); }
 
+/* Section label — small caps for editorial feel */
 .title {
-  font-size: 11px;
+  font-size: var(--text-2xs);
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
-  color: var(--color-text-muted);
+  letter-spacing: 0.08em;
+  color: var(--color-text-faint);
+  font-family: var(--font-ui, var(--font-fallback-sans));
 }
 
 .actions {
@@ -40,12 +42,12 @@
 }
 
 .action {
-  color: var(--color-text-muted);
+  color: var(--color-text-faint);
   display: flex;
   align-items: center;
   padding: 3px;
   border-radius: var(--radius-sm);
-  transition: color var(--transition), background var(--transition);
+  transition: color var(--duration) var(--ease), background var(--duration) var(--ease);
 }
 .action:hover {
   color: var(--color-text);

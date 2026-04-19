@@ -1,13 +1,13 @@
 "use client";
 
-import { Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import { LayoutGrid, Home, Maximize2 } from "lucide-react";
+import { Suspense, useState, useEffect } from "react";
+import { LayoutGrid, Home, Maximize2, BarChart2, Search } from "lucide-react";
 import { useProject } from "@/hooks/useProject";
 import { useTheme } from "@/hooks/useTheme";
 import { useProjectStore } from "@/store/projectStore";
-import { useEditorStore, PLOT_GRID_ID, COMPILE_ID, BOOK_INFO_ID } from "@/store/editorStore";
+import { useEditorStore, PLOT_GRID_ID, COMPILE_ID, BOOK_INFO_ID, SEARCH_ID, STATS_ID } from "@/store/editorStore";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { ZoomBar } from "@/components/ui/ZoomBar";
 import { Binder } from "@/components/binder/Binder";
 import { SceneEditor } from "@/components/editor/SceneEditor";
 import { CharacterSheetEditor } from "@/components/sheets/CharacterSheetEditor";
@@ -16,30 +16,49 @@ import { BookInfoEditor } from "@/components/sheets/BookInfoEditor";
 import { PlotGrid } from "@/components/plotgrid/PlotGrid";
 import { CompilePanel } from "@/components/compile/CompilePanel";
 import { ChapterPanel } from "@/components/chapter/ChapterPanel";
+import { StatsPanel } from "@/components/stats/StatsPanel";
+import { SearchPanel } from "@/components/search/SearchPanel";
+import { MapEditor } from "@/components/map/MapEditor";
 import styles from "./page.module.css";
 
 function WorkspaceInner() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const projectId = searchParams.get("id") ?? "";
+  const [projectId, setProjectId] = useState("");
+
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get("id") ?? "";
+    setProjectId(id);
+    if (!id) window.location.href = "/";
+  }, []);
+
   const { loading, error } = useProject(projectId);
   useTheme();
 
   const project = useProjectStore((s) => s.project);
-  const { activeNodeId, openPlotGrid, toggleZenMode } = useEditorStore();
+  const { activeNodeId, openPlotGrid, openStats, openSearch, toggleZenMode } = useEditorStore();
+  const editorZoom = useEditorStore((s) => s.editorZoom);
+  const zoomIn = useEditorStore((s) => s.zoomIn);
+  const zoomOut = useEditorStore((s) => s.zoomOut);
+  const resetZoom = useEditorStore((s) => s.resetZoom);
 
-  if (!projectId) {
-    router.replace("/");
-    return null;
-  }
+  // Global zoom shortcuts: ⌘= / ⌘+ zoom in, ⌘- zoom out, ⌘0 reset
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (!(e.metaKey || e.ctrlKey)) return;
+      if (e.key === "=" || e.key === "+") { e.preventDefault(); zoomIn(); }
+      else if (e.key === "-")              { e.preventDefault(); zoomOut(); }
+      else if (e.key === "0")              { e.preventDefault(); resetZoom(); }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [zoomIn, zoomOut, resetZoom]);
 
-  if (loading) return <div className={styles.splash}>Loading…</div>;
+  if (!projectId || loading) return <div className={styles.splash}>Loading…</div>;
 
   if (error || !project) {
     return (
       <div className={styles.splash}>
         Project not found.{" "}
-        <button onClick={() => router.push("/")}>Go home</button>
+        <button onClick={() => { window.location.href = "/"; }}>Go home</button>
       </div>
     );
   }
@@ -53,6 +72,8 @@ function WorkspaceInner() {
     if (activeNodeId === COMPILE_ID) return <CompilePanel />;
     if (activeNodeId === PLOT_GRID_ID) return <PlotGrid />;
     if (activeNodeId === BOOK_INFO_ID) return <BookInfoEditor />;
+    if (activeNodeId === STATS_ID) return <StatsPanel />;
+    if (activeNodeId === SEARCH_ID) return <SearchPanel />;
     if (!activeNode) return <Welcome projectName={project!.name} />;
     if (activeNode.kind === "folder")
       return <ChapterPanel key={activeNode.id} chapterId={activeNode.id} />;
@@ -64,6 +85,8 @@ function WorkspaceInner() {
       return <CharacterSheetEditor nodeId={activeNode.id} title={activeNode.title} />;
     if (activeNode.kind === "place")
       return <PlaceSheetEditor nodeId={activeNode.id} title={activeNode.title} />;
+    if (activeNode.kind === "map")
+      return <MapEditor key={activeNode.id} nodeId={activeNode.id} title={activeNode.title} />;
     return null;
   }
 
@@ -72,13 +95,27 @@ function WorkspaceInner() {
       <header className={styles.toolbar}>
         <button
           className={styles.toolbarBtn}
-          onClick={() => router.push("/")}
+          onClick={() => { window.location.href = "/"; }}
           title="Home"
         >
           <Home size={14} />
         </button>
         <span className={styles.projectName}>{project.name}</span>
         <div className={styles.toolbarRight}>
+          <button
+            className={styles.toolbarBtn}
+            onClick={openSearch}
+            title="Search"
+          >
+            <Search size={14} />
+          </button>
+          <button
+            className={styles.toolbarBtn}
+            onClick={openStats}
+            title="Manuscript Statistics"
+          >
+            <BarChart2 size={14} />
+          </button>
           <button
             className={styles.toolbarBtn}
             onClick={openPlotGrid}
@@ -98,7 +135,15 @@ function WorkspaceInner() {
       </header>
       <div className={styles.body}>
         <Binder />
-        <main className={styles.main}>{renderMain()}</main>
+        <main className={styles.main}>
+          <div
+            className={styles.zoomWrap}
+            style={editorZoom === 1 ? undefined : { zoom: editorZoom }}
+          >
+            {renderMain()}
+          </div>
+          <ZoomBar />
+        </main>
       </div>
     </div>
   );

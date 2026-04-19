@@ -11,8 +11,15 @@ export function useProject(projectId: string) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!projectId) {
+      // No ID yet — stay in loading state, don't set "not found"
+      setError(null);
+      setLoading(true);
+      return;
+    }
     async function load() {
       setLoading(true);
+      setError(null);
       try {
         const refs = await listProjects();
         const ref = refs.find((r) => r.id === projectId);

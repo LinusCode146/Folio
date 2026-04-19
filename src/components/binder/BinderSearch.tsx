@@ -1,6 +1,6 @@
 "use client";
 
-import { FileText, Folder, User, MapPin, StickyNote } from "lucide-react";
+import { FileText, Folder, User, MapPin, StickyNote, Globe } from "lucide-react";
 import { useEditorStore } from "@/store/editorStore";
 import type { BinderNode, BinderSection } from "@/types";
 import styles from "./BinderSearch.module.css";
@@ -10,6 +10,7 @@ const sectionLabel: Record<BinderSection, string> = {
   characters: "Characters",
   places: "Places",
   notes: "Notes",
+  maps: "Maps",
 };
 
 const kindIcon = (kind: BinderNode["kind"]) => {
@@ -19,6 +20,7 @@ const kindIcon = (kind: BinderNode["kind"]) => {
     case "character": return <User size={13} />;
     case "place":     return <MapPin size={13} />;
     case "note":      return <StickyNote size={13} />;
+    case "map":       return <Globe size={13} />;
   }
 };
 

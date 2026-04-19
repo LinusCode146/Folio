@@ -2,16 +2,19 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--color-bg);
+  background: var(--color-canvas);
 }
 
 .scroll {
   flex: 1;
   overflow-y: auto;
-  padding: var(--space-6) var(--space-4);
+  padding: var(--space-3xl) var(--space-lg);
 }
-.scroll::-webkit-scrollbar { width: 6px; }
-.scroll::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+.scroll::-webkit-scrollbar { width: 4px; }
+.scroll::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--color-border) 80%, var(--color-accent) 20%);
+  border-radius: 2px;
+}
 
 .page {
   max-width: 560px;
@@ -19,94 +22,106 @@
 }
 
 .heading {
-  font-size: 26px;
-  font-weight: 700;
+  font-family: var(--font-display, var(--font-fallback-serif));
+  font-size: var(--text-2xl);
+  font-weight: 400;
+  font-style: italic;
   color: var(--color-text);
-  margin-bottom: var(--space-2);
-  letter-spacing: -0.3px;
+  margin-bottom: var(--space-sm);
+  letter-spacing: -0.5px;
+  line-height: 1.2;
 }
 
 .subheading {
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--color-text-muted);
-  margin-bottom: var(--space-6);
-  line-height: 1.5;
+  margin-bottom: var(--space-3xl);
+  line-height: 1.6;
 }
 
 .section {
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-2xl);
   border-top: 1px solid var(--color-border);
-  padding-top: var(--space-4);
+  padding-top: var(--space-lg);
 }
 
 .sectionTitle {
-  font-size: 11px;
+  font-size: var(--text-2xs);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--color-text-muted);
-  margin-bottom: var(--space-4);
+  letter-spacing: 0.1em;
+  color: var(--color-text-faint);
+  margin-bottom: var(--space-lg);
+  font-family: var(--font-ui, var(--font-fallback-sans));
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
-  margin-bottom: var(--space-4);
+  gap: var(--space-xs);
+  margin-bottom: var(--space-lg);
 }
 
 .label {
-  font-size: 12px;
+  font-size: var(--text-2xs);
   font-weight: 600;
-  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-faint);
+  font-family: var(--font-ui, var(--font-fallback-sans));
 }
 
 .input {
   height: 34px;
-  padding: 0 var(--space-3);
+  padding: 0 var(--space-md);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-surface);
   color: var(--color-text);
-  font-size: 14px;
+  font-size: var(--text-base);
   outline: none;
-  transition: border-color var(--transition);
+  transition: border-color var(--duration) var(--ease);
 }
 .input:focus { border-color: var(--color-accent); }
-.input::placeholder { color: var(--color-text-muted); opacity: 0.6; }
+.input::placeholder { color: var(--color-text-faint); }
 
 .textarea {
-  padding: var(--space-2) var(--space-3);
+  padding: var(--space-sm) var(--space-md);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-surface);
   color: var(--color-text);
-  font-size: 14px;
-  line-height: 1.6;
+  font-family: var(--font-manuscript, var(--font-fallback-serif));
+  font-size: var(--text-base);
+  line-height: 1.65;
   resize: vertical;
   outline: none;
-  transition: border-color var(--transition);
-  font-family: inherit;
+  transition: border-color var(--duration) var(--ease);
 }
 .textarea:focus { border-color: var(--color-accent); }
-.textarea::placeholder { color: var(--color-text-muted); opacity: 0.6; }
+.textarea::placeholder { color: var(--color-text-faint); }
 
 .readonlyField {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-lg);
 }
 
 .readonlyValue {
-  font-size: 14px;
+  font-size: var(--text-base);
   font-weight: 600;
   color: var(--color-text);
   padding: 6px 0;
 }
 
 .readonlyHint {
-  font-size: 11px;
-  color: var(--color-text-muted);
-  opacity: 0.7;
+  font-size: var(--text-2xs);
+  color: var(--color-text-faint);
+}
+
+.fieldHint {
+  font-size: var(--text-2xs);
+  color: var(--color-text-faint);
+  line-height: 1.5;
 }

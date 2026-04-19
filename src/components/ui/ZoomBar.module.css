@@ -1,0 +1,105 @@
+/*
+ * ZoomBar — floating pill at the bottom-right of the editor area.
+ * Low-stakes ambient control. Stays out of the way at 100%, still present.
+ */
+
+.root {
+  position: absolute;
+  bottom: var(--space-lg);
+  right: var(--space-lg);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: color-mix(in oklch, var(--color-surface) 92%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.04),
+    0 8px 24px -8px rgb(0 0 0 / 0.12);
+  font-family: var(--font-ui, var(--font-fallback-sans));
+  user-select: none;
+  pointer-events: auto;
+}
+
+.btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 var(--space-xs);
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease),
+              color var(--duration-fast) var(--ease);
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+}
+
+.btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.pctBtn {
+  min-width: 44px;
+}
+
+.pct {
+  font-family: var(--font-mono, var(--font-fallback-mono));
+  font-size: var(--text-2xs);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
+}
+
+.btn:hover:not(:disabled) .pct {
+  color: var(--color-text);
+}
+
+.resetBtn {
+  color: var(--color-accent);
+}
+.resetBtn:hover {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-hover);
+}
+
+/* Tooltip — same style as MapToolbar tooltips, but positioned above */
+.btn[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) translateY(2px);
+  padding: 4px var(--space-sm);
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: var(--text-2xs);
+  font-family: var(--font-ui, var(--font-fallback-sans));
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  border-radius: var(--radius-xs);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.18);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease) 300ms,
+              transform var(--duration-fast) var(--ease) 300ms;
+  z-index: 50;
+}
+.btn[data-tooltip]:hover:not(:disabled)::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
