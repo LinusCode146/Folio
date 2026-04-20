@@ -32,7 +32,7 @@
  */
 
 import { Mark, Extension } from "@tiptap/core";
-import { Plugin, PluginKey } from "@tiptap/pm/state";
+import { Plugin, PluginKey, TextSelection } from "@tiptap/pm/state";
 import type { EditorState, Transaction } from "@tiptap/pm/state";
 import { Fragment, Slice } from "@tiptap/pm/model";
 import type { Node as PMNode, Schema } from "@tiptap/pm/model";
@@ -198,9 +198,9 @@ function buildDeletionRestore(
     const out: PMNode[] = [];
     frag.forEach((node) => {
       if (node.isText) {
-        if (node.marks.some((m) => m.type === insType)) return; // revert own insert
-        const filtered = node.marks.filter((m) => m.type !== delType);
-        const newMarks = [...filtered, delType.create({ suggestionId })];
+        if (node.marks.some((m) => m.type === insType)) return; // revert own insert — cancel it
+        if (node.marks.some((m) => m.type === delType)) return; // already pending deletion — let deletion go through
+        const newMarks = [...node.marks, delType.create({ suggestionId })];
         out.push(node.mark(newMarks));
       } else if (node.isLeaf) {
         // Leaf inline node (e.g. hardBreak) — restore as-is (no deletion mark support on leaves)
@@ -478,6 +478,12 @@ export const Suggesting = Extension.create<SuggestingOptions>({
 
           const tr = newState.tr;
           let touched = false;
+          // For pure deletions (backspace / delete key) we want the caret to
+          // stay where the user's edit put it — BEFORE the restored slice —
+          // so the next Backspace hits real text, not the suggestion we just
+          // wrote into the document.  Record the target caret pos here and
+          // apply it after all changes have been written.
+          let caretTarget: number | null = null;
 
           // Apply highest-position changes first so earlier positions don't shift.
           changes.sort((a, b) => b.fromNew - a.fromNew);
@@ -545,6 +551,12 @@ export const Suggesting = Extension.create<SuggestingOptions>({
                     // pair was already announced above
                   }
                   touched = true;
+                  // Pure deletion (no paired insert) → keep caret BEFORE the
+                  // restored slice so subsequent Backspace advances leftward
+                  // into real text instead of hitting the suggestion mark.
+                  if (!hasInsert) {
+                    caretTarget = insertedFrom;
+                  }
                 } catch {
                   // Cross-block deletions with complex openness can fail to
                   // replace cleanly — in that case we silently drop the
@@ -557,6 +569,17 @@ export const Suggesting = Extension.create<SuggestingOptions>({
           });
 
           if (!touched) return null;
+
+          // Park the caret before the restored deletion slice so repeated
+          // Backspace keeps stepping through real characters.
+          if (caretTarget !== null) {
+            try {
+              const $pos = tr.doc.resolve(caretTarget);
+              tr.setSelection(TextSelection.near($pos, -1));
+            } catch {
+              // ignore — fall back to whatever selection the user's tx set
+            }
+          }
 
           markInternal(tr);
           return tr;

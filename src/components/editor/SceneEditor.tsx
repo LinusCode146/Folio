@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
+import { PanelRight, MessageSquare, Camera, GitPullRequestArrow, X } from "lucide-react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -531,33 +532,38 @@ export function SceneEditor({ nodeId, folder, title, inline = false, onFocusEdit
               <button
                 className={`${styles.sidebarTab} ${sidebarTab === "synopsis" ? styles.sidebarTabActive : ""}`}
                 onClick={() => setSidebarTab("synopsis")}
+                title="Synopsis"
               >
-                Synopsis
+                <PanelRight size={15} />
               </button>
               <button
                 className={`${styles.sidebarTab} ${sidebarTab === "annotations" ? styles.sidebarTabActive : ""}`}
                 onClick={() => setSidebarTab("annotations")}
+                title="Annotations"
               >
-                Annotations
+                <MessageSquare size={15} />
               </button>
               <button
                 className={`${styles.sidebarTab} ${sidebarTab === "snapshots" ? styles.sidebarTabActive : ""}`}
                 onClick={() => setSidebarTab("snapshots")}
+                title="Snapshots"
               >
-                Snapshots
+                <Camera size={15} />
               </button>
               <button
                 className={`${styles.sidebarTab} ${sidebarTab === "suggestions" ? styles.sidebarTabActive : ""}`}
                 onClick={() => setSidebarTab("suggestions")}
+                title="Suggestions (track changes)"
               >
-                Suggestions
+                <GitPullRequestArrow size={15} />
               </button>
+              <div className={styles.sidebarTabsDivider} />
               <button
                 className={styles.sidebarClose}
                 onClick={() => setSidebarTab(null)}
-                title="Close"
+                title="Close panel"
               >
-                ✕
+                <X size={13} />
               </button>
             </div>
             <div className={styles.sidebarContent}>
