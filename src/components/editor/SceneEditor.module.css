@@ -515,7 +515,11 @@
 }
 
 .zenPage {
-  max-width: var(--max-zen);
+  /* Match the normal SceneEditor column width so switching modes doesn't
+     reflow the text.  --max-manuscript is clamp(680px, 58vw, 880px), which
+     scales with the viewport — the old fixed 620px felt cramped on wide
+     displays where nothing else competes for horizontal space. */
+  max-width: var(--max-manuscript);
   margin: 0 auto;
 }
 

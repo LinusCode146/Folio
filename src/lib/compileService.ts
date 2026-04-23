@@ -1,6 +1,6 @@
 import { loadScene } from "./documentService";
 import { tiptapToPdfmake } from "./tiptapToPdfmake";
-import type { Project, ID } from "@/types";
+import type { Project, ID, BinderNode } from "@/types";
 
 const formatSpaced = (str: string) => str.toUpperCase().split("").join(" ");
 
@@ -8,7 +8,14 @@ export interface CompileOptions {
   includeToc: boolean;
   sceneSeparator: "stars" | "hash" | "blank" | "rule" | "custom";
   customSeparator: string;
-  pageFormat: "paperback" | "trade" | "a4" | "letter";
+  /**
+   * Book formats (paperback/trade/a4/letter) produce a full manuscript with
+   * title page, chapters and TOC. "normal" produces a plain, standardised PDF
+   * of one or more individual scenes — Letter page, Times 12pt, 1" margins,
+   * scene title at top, no book chrome. In "normal" mode `includedChapterIds`
+   * contains scene IDs rather than chapter-folder IDs.
+   */
+  pageFormat: "paperback" | "trade" | "a4" | "letter" | "normal";
   includedChapterIds: Set<ID>;
 }
 
@@ -17,7 +24,29 @@ const PAGE_SIZES: Record<CompileOptions["pageFormat"], [number, number]> = {
   trade: [432, 648],
   a4: [595, 842],
   letter: [612, 792],
+  normal: [612, 792], // Letter — matches most writers' default print target
 };
+
+/**
+ * Walk the manuscript tree in reading order and return every scene node.
+ * Used by "Normal PDF" mode, where the user selects scenes (not chapters).
+ */
+export function collectManuscriptScenes(project: Project): BinderNode[] {
+  const scenes: BinderNode[] = [];
+  const seen = new Set<ID>();
+  function walk(ids: ID[]) {
+    for (const id of ids) {
+      if (seen.has(id)) continue;
+      seen.add(id);
+      const node = project.nodes[id];
+      if (!node) continue;
+      if (node.kind === "scene") scenes.push(node);
+      else if (node.kind === "folder" && node.children) walk(node.children);
+    }
+  }
+  walk(project.manuscriptRootIds);
+  return scenes;
+}
 
 function separator(options: CompileOptions): Record<string, unknown> {
   switch (options.sceneSeparator) {
@@ -183,13 +212,100 @@ async function buildContent(
   return content;
 }
 
+/**
+ * Build the content list for "Normal PDF" mode: each selected scene is
+ * emitted as a centered title + its text, with a page break between scenes.
+ * No title page, dedication, TOC, chapter numbering or headers — just the
+ * words on the page in a standardised submission style.
+ */
+async function buildNormalContent(
+    options: CompileOptions,
+    project: Project,
+    projectPath: string
+): Promise<Record<string, unknown>[]> {
+  // Walk manuscript order and keep only scenes that were ticked.
+  const orderedScenes = collectManuscriptScenes(project).filter((s) =>
+    options.includedChapterIds.has(s.id)
+  );
+
+  const content: Record<string, unknown>[] = [];
+  for (let i = 0; i < orderedScenes.length; i++) {
+    const scene = orderedScenes[i];
+    content.push({
+      text: scene.title,
+      fontSize: 14,
+      bold: true,
+      alignment: "center",
+      margin: [0, 0, 0, 28],
+    });
+    const blocks = await loadSceneBlocks(projectPath, scene.id);
+    content.push(...blocks);
+    if (i < orderedScenes.length - 1) {
+      content.push({ text: "", pageBreak: "after" });
+    }
+  }
+  return content;
+}
+
+/** Doc definition for "Normal PDF" mode — standard submission styling. */
+function buildNormalDocDefinition(
+    project: Project,
+    content: Record<string, unknown>[]
+): any {
+  const pageSize = PAGE_SIZES.normal;
+  return {
+    pageSize: { width: pageSize[0], height: pageSize[1] },
+    // pdfmake pageMargins order: [left, top, right, bottom]
+    // 60pt (~0.83") left/right — tighter than the 1" default so more text
+    // fits per line without crowding the binding edge; 72pt (1") top/bottom
+    // keeps the classic submission feel.
+    pageMargins: [60, 72, 60, 72],
+    defaultStyle: {
+      font: "Times",
+      fontSize: 12,
+      lineHeight: 1.4,
+      margin: [0, 0, 0, 0],
+    },
+    styles: {
+      paragraph: {
+        margin: [0, 0, 0, 0],
+        leadingIndent: 18,
+      },
+    },
+    content,
+    // Minimal footer: centered page number, no header.
+    footer: (currentPage: number) => ({
+      text: String(currentPage),
+      alignment: "center",
+      fontSize: 9,
+      color: "#888888",
+      margin: [0, 20, 0, 0],
+    }),
+    info: {
+      title: project.name,
+      author: project.bookMeta.author,
+    },
+  };
+}
+
 async function buildDocDefinition(
     options: CompileOptions,
     project: Project,
     projectPath: string
 ): Promise<any> {
+  // Normal PDF takes a different, simpler path — no title page, no TOC,
+  // no chapter numbering, just the scene content.
+  if (options.pageFormat === "normal") {
+    const content = await buildNormalContent(options, project, projectPath);
+    return buildNormalDocDefinition(project, content);
+  }
+
   const pageSize = PAGE_SIZES[options.pageFormat];
-  const margins = [50, 60, 50, 60];
+  // pdfmake pageMargins: [left, top, right, bottom].
+  // 42pt (~0.58") left/right — matches commercial trade-paperback interior
+  // design (outside margin typically 0.5-0.6"). Tighter than the old 50pt.
+  // Top/bottom stay at 60pt so running headers / page numbers still breathe.
+  const margins = [42, 60, 42, 60];
   const content = await buildContent(options, project, projectPath);
 
   const titleStr = formatSpaced(project.name || "");

@@ -10,6 +10,10 @@
   border-bottom: 1px solid var(--color-border);
   background: var(--color-surface);
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
 }
 
 .title {
@@ -18,6 +22,15 @@
   font-weight: 400;
   font-style: italic;
   color: var(--color-text);
+}
+
+/* Header actions — lives in the top bar, far from the iframe's built-in
+   PDF zoom / page-nav toolbar (which floats at the bottom of the preview
+   and would otherwise sit directly on top of Export PDF). */
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
 }
 
 .body {
@@ -257,14 +270,7 @@
   font-style: italic;
 }
 
-/* ── Actions ─────────────────────────────────────────── */
-
-.actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--space-md);
-  flex-shrink: 0;
-}
+/* ── Actions (live in the header now — see .headerActions) ─── */
 
 .refreshBtn {
   display: flex;
