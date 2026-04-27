@@ -36,36 +36,65 @@
 
 /* ── Manuscript canvas ──────────────────────────────────────── */
 
+/*
+ * .ProseMirror is the contenteditable root. Best-practice surface:
+ *  - line-height owns the line-box; the caret sizes itself to it. Do NOT
+ *    pin it to 1 — that produces a tiny caret on serifs with low x-heights.
+ *  - caret-color is explicit so the cursor reads as ink, not browser default.
+ *  - padding-block gives the caret breathing room at the very start and
+ *    very end of the document (otherwise it sits flush against the edge).
+ *  - scroll-padding lets typewriter scroll find a comfortable rest position.
+ *  - font-feature-settings turns on old-style figures + common ligatures —
+ *    correct manuscript convention for body serifs like EB Garamond.
+ */
 .editor :global(.ProseMirror) {
   outline: none;
   font-family: var(--font-manuscript, var(--font-fallback-serif));
   font-size: var(--text-md);  /* 17px — optimised for long-form reading */
+  line-height: var(--editor-line-height, 1.7);
   color: var(--color-text);
+  /* Native caret is hidden — CustomCaret renders a fixed-height replacement
+     so caret height stays constant regardless of line-spacing. */
+  caret-color: transparent;
   min-height: 60vh;
+  padding: var(--space-sm) 0 30vh;
   cursor: text;
+  font-feature-settings: "kern", "liga", "calt", "onum";
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  hanging-punctuation: first last;
+  scroll-padding-block: 30vh;
 }
 
 /*
- * Novel-style paragraphs — no gaps, consistent indent.
- *
- * CARET CONTRACT: line-height stays at 1 (= font-size) so the cursor is exactly
- * one character tall. Inter-paragraph rhythm comes from margin-bottom instead.
- * Do not change this without reading the comment in LineHeight.ts.
+ * Novel-style paragraphs — no inter-paragraph margin, indented first line.
+ * Line-height is inherited from .ProseMirror (no override here, so the
+ * caret's line-box is consistent across paragraphs and headings).
  */
 .editor :global(.ProseMirror) p {
-  margin-top: 0;
-  margin-bottom: 0;
+  margin: 0;
   text-indent: 1.5em;
-  line-height: var(--editor-line-height, 1);
+  scroll-margin-block: 30vh;  /* keep typewriter-scrolled paragraph centered */
 }
 
-/* Empty paragraphs hold their line so blank lines stay visually rhythmic */
+/*
+ * Empty paragraphs need explicit height — ProseMirror's <p></p> collapses to
+ * 0 otherwise. Use 1lh (one line-height unit) so blank lines match the
+ * rhythm of typed lines exactly, regardless of the chosen line-height.
+ */
 .editor :global(.ProseMirror p.para-empty) {
-  min-height: 1em;
+  min-height: 1lh;
 }
 
-/* First paragraph of each scene has no indent */
-.editor :global(.ProseMirror) p:first-of-type {
+/* First paragraph of the scene + first paragraph after a heading: no indent.
+   Standard manuscript convention — flush opening, then indents take over. */
+.editor :global(.ProseMirror) > p:first-child,
+.editor :global(.ProseMirror) h1 + p,
+.editor :global(.ProseMirror) h2 + p,
+.editor :global(.ProseMirror) h3 + p,
+.editor :global(.ProseMirror) hr + p,
+.editor :global(.ProseMirror) blockquote + p {
   text-indent: 0;
 }
 
@@ -73,21 +102,78 @@
   font-family: var(--font-display, var(--font-fallback-serif));
   font-size: var(--text-xl);
   font-weight: 500;
+  line-height: 1.25;  /* tight, independent of body line-height */
   margin: 2em 0 0.6em;
   letter-spacing: -0.3px;
+  scroll-margin-block: 30vh;
 }
 .editor :global(.ProseMirror h2) {
   font-family: var(--font-display, var(--font-fallback-serif));
   font-size: var(--text-lg);
   font-weight: 400;
   font-style: italic;
+  line-height: 1.3;
   margin: 1.6em 0 0.5em;
+  scroll-margin-block: 30vh;
+}
+.editor :global(.ProseMirror h3) {
+  font-family: var(--font-display, var(--font-fallback-serif));
+  font-size: var(--text-base);
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 1.4em 0 0.4em;
+  scroll-margin-block: 30vh;
 }
 .editor :global(.ProseMirror ul),
 .editor :global(.ProseMirror ol) { padding-left: 1.5em; margin-bottom: 1em; }
 .editor :global(.ProseMirror li) { margin-bottom: 0.3em; }
+.editor :global(.ProseMirror li > p) { text-indent: 0; }  /* indents look weird inside list bullets */
 .editor :global(.ProseMirror strong) { font-weight: 700; }
 .editor :global(.ProseMirror em) { font-style: italic; }
+.editor :global(.ProseMirror blockquote) {
+  margin: 1em 0;
+  padding-left: 1.25em;
+  border-left: 1px solid var(--color-border-strong);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+.editor :global(.ProseMirror hr) {
+  margin: 1.5em auto;
+}
+
+/* ── Custom caret ────────────────────────────────────────────
+ *
+ * The .editorFrame wraps EditorContent and is the positioning context
+ * for the custom caret. Caret coordinates are computed relative to this
+ * wrapper, so the caret scrolls naturally with the editor content
+ * without per-frame JS updates during scroll.
+ */
+.editorFrame {
+  position: relative;
+}
+
+.customCaret {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1.5px;
+  background: var(--color-accent-ink, var(--color-text));
+  border-radius: 0.5px;
+  pointer-events: none;
+  will-change: transform;
+  animation: caretBlink 1.06s step-end infinite;
+  z-index: 2;
+}
+
+@keyframes caretBlink {
+  0%, 49% { opacity: 1; }
+  50%, 99% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .customCaret { animation: none; opacity: 1; }
+}
 
 /* Search highlight — amber glow instead of Word-yellow */
 .editor :global(.search-match) {

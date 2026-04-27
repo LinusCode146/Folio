@@ -1,49 +1,49 @@
 import type { Metadata } from "next";
 import {
-  Bricolage_Grotesque,
-  Literata,
-  Bodoni_Moda,
-  Fragment_Mono,
+  Alegreya_Sans,
+  EB_Garamond,
+  IM_Fell_English_SC,
+  Cutive_Mono,
 } from "next/font/google";
 import "./globals.css";
 import React from "react";
 
 /*
- * Typography system — Writer's Study
+ * Typography system — Vellum & Gold Leaf
  *
- * UI / chrome    → Bricolage Grotesque (warm neo-grotesk, not overused)
- * Manuscript     → Literata (designed for long-form reading, variable optical sizing)
- * Display        → Bodoni Moda (sharp editorial serif — chapter numerals, hub hero)
- * Mono           → Fragment Mono (word counts, shortcuts)
+ * UI / chrome    → Alegreya Sans (warm humanist, pairs with Alegreya/EB Garamond family)
+ * Manuscript     → EB Garamond (classical Garamond revival, long-form readable)
+ * Display        → IM Fell English SC (17th-c. English book face — Tolkien-library feel)
+ * Mono           → Cutive Mono (typewriter warmth)
  *
- * Each font is exposed as a CSS custom property on <html> so all module CSS
- * can reference var(--font-ui) etc. without hard-coding family names.
+ * Variable names are preserved (--font-ui, --font-manuscript, --font-display,
+ * --font-mono) so every component stylesheet continues working unchanged.
  */
 
-const bricolageGrotesque = Bricolage_Grotesque({
+const alegreyaSans = Alegreya_Sans({
   subsets: ["latin"],
   variable: "--font-ui",
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
-
-const literata = Literata({
-  subsets: ["latin"],
-  variable: "--font-manuscript",
-  weight: ["300", "400", "500", "700"],
-  style: ["normal", "italic"],
-  display: "swap",
-});
-
-const bodoniModa = Bodoni_Moda({
-  subsets: ["latin"],
-  variable: "--font-display",
   weight: ["400", "500", "700"],
   style: ["normal", "italic"],
   display: "swap",
 });
 
-const fragmentMono = Fragment_Mono({
+const ebGaramond = EB_Garamond({
+  subsets: ["latin"],
+  variable: "--font-manuscript",
+  weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
+const imFellEnglishSC = IM_Fell_English_SC({
+  subsets: ["latin"],
+  variable: "--font-display",
+  weight: ["400"],
+  display: "swap",
+});
+
+const cutiveMono = Cutive_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
   weight: ["400"],
@@ -56,10 +56,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const fontVars = [
-    bricolageGrotesque.variable,
-    literata.variable,
-    bodoniModa.variable,
-    fragmentMono.variable,
+    alegreyaSans.variable,
+    ebGaramond.variable,
+    imFellEnglishSC.variable,
+    cutiveMono.variable,
   ].join(" ");
 
   return (

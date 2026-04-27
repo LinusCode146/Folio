@@ -14,23 +14,24 @@ declare module "@tiptap/core" {
   }
 }
 
-export const DEFAULT_LINE_HEIGHT = "1";
+export const DEFAULT_LINE_HEIGHT = "1.7";
 
 /**
  * LineHeight — editor-global line-height.
  *
- * Previous implementation stored line-height as a per-paragraph attribute,
- * which had two problems:
- *   1) Toolbar changes only applied to the current paragraph (or the
- *      selection), leaving the rest of the document inconsistent.
- *   2) Inline styles on individual <p> elements overrode any attempt to
- *      control caret height from the stylesheet, so the caret stayed
- *      1.5× font-size on old paragraphs even after global CSS fixes.
+ * Sets a CSS custom property (--editor-line-height) on the editor root DOM
+ * node, applied to .ProseMirror root in CSS so every block inherits it.
+ * A single command updates the whole document at once.
  *
- * This version sets a CSS custom property (--editor-line-height) on the
- * editor root DOM node. Every paragraph inherits from it via CSS, so a
- * single change updates the whole document — and there are no per-node
- * inline styles to override the caret-height baseline of line-height: 1.
+ * Default 1.7 is generous serif body — the caret sits in a properly sized
+ * line-box (≈1.7em tall), which feels normal for prose. Anything tighter
+ * than ~1.4 makes the caret look truncated against the text it's editing.
+ *
+ * History: an earlier version pinned line-height to 1 in CSS to "control
+ * caret height from the stylesheet". That actually produced the opposite —
+ * a caret only as tall as the cap-height with mismatched empty-line
+ * heights and broken typewriter scroll math. Removed in favour of normal
+ * CSS line-box behaviour.
  */
 export const LineHeight = Extension.create({
   name: "lineHeight",

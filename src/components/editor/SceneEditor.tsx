@@ -25,6 +25,7 @@ import { EditorToolbar } from "./EditorToolbar";
 import { FindBar } from "./FindBar";
 import { WordCount } from "./WordCount";
 import { SessionGoal } from "./SessionGoal";
+import { CustomCaret } from "./CustomCaret";
 import { useAutoSave } from "@/hooks/useAutoSave";
 import { useEditorStore } from "@/store/editorStore";
 import { useProjectStore } from "@/store/projectStore";
@@ -86,6 +87,12 @@ export function SceneEditor({ nodeId, folder, title, inline = false, onFocusEdit
 
   const editor = useEditor({
     immediatelyRender: false,
+    // Catch schema-mismatched legacy documents (e.g. older line-height attrs,
+    // removed marks) instead of throwing inside ProseMirror's parser.
+    enableContentCheck: true,
+    onContentError: ({ error }) => {
+      console.warn("[SceneEditor] content schema mismatch — falling back to empty doc", error);
+    },
     extensions: [
       StarterKit,
       Placeholder.configure({ placeholder: "Begin writing…" }),
@@ -128,6 +135,18 @@ export function SceneEditor({ nodeId, folder, title, inline = false, onFocusEdit
       }),
     ],
     content: { type: "doc", content: [] },
+    // Apply attributes directly to the contenteditable DOM node — accessibility,
+    // spellcheck, and a stable hook for browser-extension authors / tests.
+    editorProps: {
+      attributes: {
+        class: "manuscript-editable",
+        spellcheck: "true",
+        role: "textbox",
+        "aria-multiline": "true",
+        "aria-label": "Scene editor",
+        translate: "no",
+      },
+    },
     onFocus: ({ editor }) => {
       onFocusEditor?.(editor as Editor);
     },
@@ -270,8 +289,13 @@ export function SceneEditor({ nodeId, folder, title, inline = false, onFocusEdit
       const migratedContent = stripLineHeightAttrs(loaded.content);
       // @ts-ignore
       editor.commands.setContent(migratedContent as object, false);
-      // Restore per-scene global line-height
-      editor.chain().setLineHeight(loaded.lineHeight ?? DEFAULT_LINE_HEIGHT).run();
+      // Restore per-scene global line-height. Treat the legacy stored value
+      // "1" as a stand-in for "default" — it came from an older build where
+      // line-height was wrongly pinned to 1 for caret reasons. Anything the
+      // user intentionally set (1.4, 1.65, 2, …) sticks.
+      const storedLH = loaded.lineHeight;
+      const restoredLH = (!storedLH || storedLH === "1") ? DEFAULT_LINE_HEIGHT : storedLH;
+      editor.chain().setLineHeight(restoredLH).run();
       markEditorClean();
     }).catch(console.error);
 
@@ -392,7 +416,10 @@ export function SceneEditor({ nodeId, folder, title, inline = false, onFocusEdit
   if (inline) {
     return (
       <div className={styles.inlineRoot}>
-        <EditorContent editor={editor} className={styles.editor} />
+        <div className={styles.editorFrame}>
+          <EditorContent editor={editor} className={styles.editor} />
+          <CustomCaret editor={editor} />
+        </div>
       </div>
     );
   }
@@ -400,11 +427,14 @@ export function SceneEditor({ nodeId, folder, title, inline = false, onFocusEdit
   const pageContent = (
     <div className={styles.page}>
       <h1 className={styles.docTitle}>{title}</h1>
-      <EditorContent
-        editor={editor}
-        className={styles.editor}
-        {...(focusMode ? { "data-focus-mode": "true" } : {})}
-      />
+      <div className={styles.editorFrame}>
+        <EditorContent
+          editor={editor}
+          className={styles.editor}
+          {...(focusMode ? { "data-focus-mode": "true" } : {})}
+        />
+        <CustomCaret editor={editor} />
+      </div>
     </div>
   );
 
@@ -429,7 +459,10 @@ export function SceneEditor({ nodeId, folder, title, inline = false, onFocusEdit
             <div className={styles.zenScroll} ref={zenScrollRef}>
               <div className={styles.zenPage}>
                 <h1 className={styles.docTitle}>{title}</h1>
-                <EditorContent editor={editor} className={styles.editor} />
+                <div className={styles.editorFrame}>
+                  <EditorContent editor={editor} className={styles.editor} />
+                  <CustomCaret editor={editor} />
+                </div>
               </div>
             </div>
 
